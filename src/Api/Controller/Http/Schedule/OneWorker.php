@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace App\Api\Controller\Http\Schedule;
 
+use App\ScheduleCalculation\UseCase\Schedule\Get\GetWorkersScheduleHandler;
+use App\ScheduleCalculation\UseCase\Schedule\Get\GetWorkersScheduleQuery;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -14,6 +18,18 @@ use Symfony\Component\Routing\Annotation\Route;
 final class OneWorker
 {
 
+    private GetWorkersScheduleHandler $getWorkersScheduleHandler;
+
+    /**
+     * OneWorker constructor.
+     * @param GetWorkersScheduleHandler $getWorkersScheduleHandler
+     */
+    public function __construct(GetWorkersScheduleHandler $getWorkersScheduleHandler)
+    {
+        $this->getWorkersScheduleHandler = $getWorkersScheduleHandler;
+    }
+
+
     /**
      * @Route("/workers-schedule",
      *     name="workers-schedule",
@@ -22,9 +38,13 @@ final class OneWorker
      *
      * @return string
      */
-    public function __invoke()
+    public function __invoke(Request $request): JsonResponse
     {
-
+        $readModel = $this->getWorkersScheduleHandler->handle(new GetWorkersScheduleQuery(
+            $workerId = '',
+            $startDate = null,
+            $endDate = null
+        ));
     }
 
 }
