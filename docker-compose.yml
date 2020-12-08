@@ -1,0 +1,49 @@
+version: '3.3'
+
+services:
+
+  nginx:
+    build:
+      context: ./docker/development/nginx
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/app
+    restart: always
+    depends_on:
+      - php-fpm
+    ports:
+      - 4000:80
+
+  php-fpm:
+    build:
+      context: docker/development/php-fpm
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      - db
+    volumes:
+      - ./:/app
+
+  php-cli:
+    build:
+      context: docker/development/php-cli
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    volumes:
+    - ./:/app
+
+  db:
+    image: postgres:11.2-alpine
+    volumes:
+      - db:/var/lib/postgresql/data
+    restart: always
+    environment:
+      POSTGRES_USER: food
+      POSTGRES_PASSWORD: foodpass
+      POSTGRES_DB: food
+    ports:
+      - "4400:5111"
+
+volumes:
+  db:

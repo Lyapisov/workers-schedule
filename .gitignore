@@ -1,0 +1,29 @@
+###> symfony/framework-bundle ###
+/.env
+/public/bundles/
+/var/
+/vendor/
+###< symfony/framework-bundle ###
+
+###> PhpStorm ###
+.idea
+###< PhpStorm ###
+
+###> MacOs ###
+.DS_Store
+###< MacOs ###
+
+###> Docker ###
+/docker/development/mysql/data
+/docker/development/nginx/logs
+###< Docker ###
+
+###> symfony/phpunit-bridge ###
+.phpunit
+/phpunit.xml
+###< symfony/phpunit-bridge ###
+
+###> squizlabs/php_codesniffer ###
+/.phpcs-cache
+/phpcs.xml
+###< squizlabs/php_codesniffer ###
