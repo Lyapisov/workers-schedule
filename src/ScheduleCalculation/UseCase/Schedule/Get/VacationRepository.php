@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\ScheduleCalculation\UseCase\Schedule\Get;
 
 
-interface VocationReadModelRepository
+interface VacationRepository
 {
     /**
      * @param string $workerId

@@ -5,7 +5,7 @@ namespace App\ScheduleCalculation\UseCase\Schedule\Get;
 
 use Symfony\Component\Validator\Constraints\Date;
 
-interface WorkersScheduleReadModelRepository
+interface WorkerRepository
 {
     /**
      * @param string $workerId

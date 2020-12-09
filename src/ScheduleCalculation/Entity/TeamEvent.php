@@ -51,7 +51,7 @@ class TeamEvent
      *
      * @var Time
      */
-    private Time $start;
+    private Time $startTime;
 
     /**
      * Окончание мероприятия
@@ -60,23 +60,23 @@ class TeamEvent
      *
      * @var Time
      */
-    private Time $end;
+    private Time $endTime;
 
     /**
      * TeamEvent constructor.
      * @param string $id
      * @param DateTimeImmutable $startDate
      * @param DateTimeImmutable $endDate
-     * @param Time $start
-     * @param Time $end
+     * @param Time $startTime
+     * @param Time $endTime
      */
-    public function __construct(string $id, DateTimeImmutable $startDate, DateTimeImmutable $endDate, Time $start, Time $end)
+    public function __construct(string $id, DateTimeImmutable $startDate, DateTimeImmutable $endDate, Time $startTime, Time $endTime)
     {
         $this->id = $id;
         $this->startDate = $startDate;
         $this->endDate = $endDate;
-        $this->start = $start;
-        $this->end = $end;
+        $this->startTime = $startTime;
+        $this->endTime = $endTime;
     }
 
 

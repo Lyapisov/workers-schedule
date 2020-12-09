@@ -15,19 +15,19 @@ use App\ScheduleCalculation\Service\Holidays\Holidays;
 final class GetWorkersScheduleHandler
 {
     /**
-     * @var WorkersScheduleReadModelRepository
+     * @var WorkerRepository
      */
-    private WorkersScheduleReadModelRepository $workerReadModelRepository;
+    private WorkerRepository $workerReadModelRepository;
 
     /**
-     * @var VocationReadModelRepository
+     * @var VacationRepository
      */
-    private VocationReadModelRepository $vocationReadModelRepository;
+    private VacationRepository $vocationReadModelRepository;
 
     /**
-     * @var TeamEventsReadModelRepository
+     * @var TeamEventsRepository
      */
-    private TeamEventsReadModelRepository $teamEventsReadModelRepository;
+    private TeamEventsRepository $teamEventsReadModelRepository;
 
     /**
      * @var Holidays
@@ -36,15 +36,15 @@ final class GetWorkersScheduleHandler
 
     /**
      * GetWorkersScheduleHandler constructor.
-     * @param WorkersScheduleReadModelRepository $workerReadModelRepository
-     * @param VocationReadModelRepository $vocationReadModelRepository
-     * @param TeamEventsReadModelRepository $teamEventsReadModelRepository
+     * @param WorkerRepository $workerReadModelRepository
+     * @param VacationRepository $vocationReadModelRepository
+     * @param TeamEventsRepository $teamEventsReadModelRepository
      * @param Holidays $holidaysService
      */
     public function __construct(
-        WorkersScheduleReadModelRepository $workerReadModelRepository,
-        VocationReadModelRepository $vocationReadModelRepository,
-        TeamEventsReadModelRepository $teamEventsReadModelRepository,
+        WorkerRepository $workerReadModelRepository,
+        VacationRepository $vocationReadModelRepository,
+        TeamEventsRepository $teamEventsReadModelRepository,
         Holidays $holidaysService
     ) {
         $this->workerReadModelRepository = $workerReadModelRepository;
