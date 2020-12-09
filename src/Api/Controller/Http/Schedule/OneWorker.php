@@ -40,11 +40,16 @@ final class OneWorker
      */
     public function __invoke(Request $request): JsonResponse
     {
+
         $readModel = $this->getWorkersScheduleHandler->handle(new GetWorkersScheduleQuery(
-            $workerId = '',
-            $startDate = null,
-            $endDate = null
+            $request->get('workerId', ''),
+            $request->get('startDate', ''),
+            $request->get('endDate', '')
+
         ));
+
+
+        return new JsonResponse($readModel, JsonResponse::HTTP_OK);
     }
 
 }

@@ -9,9 +9,7 @@ interface WorkersScheduleReadModelRepository
 {
     /**
      * @param string $workerId
-     * @param Date $startDate
-     * @param Date $endDate
      * @return array
      */
-    public function find(string $workerId, Date $startDate, Date $endDate): array;
+    public function find(string $workerId): array;
 }

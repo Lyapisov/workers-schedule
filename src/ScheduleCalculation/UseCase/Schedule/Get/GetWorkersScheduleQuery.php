@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\ScheduleCalculation\UseCase\Schedule\Get;
 
-use Symfony\Component\Validator\Constraints\Date;
+use DateTimeImmutable;
 
 
 final class GetWorkersScheduleQuery
@@ -15,23 +15,26 @@ final class GetWorkersScheduleQuery
     private string $workerId;
 
     /**
-     * @var Date
+     * @var string
      */
-    private Date $startDate;
+    private string $startDate;
 
     /**
-     * @var Date
+     * @var string
      */
-    private Date $endDate;
+    private string $endDate;
 
     /**
      * GetWorkersScheduleQuery constructor.
      * @param string $workerId
-     * @param Date $startDate
-     * @param Date $endDate
+     * @param string $startDate
+     * @param string $endDate
      */
-    public function __construct(string $workerId, Date $startDate, Date $endDate)
-    {
+    public function __construct(
+        string $workerId,
+        string $startDate,
+        string $endDate
+    ) {
         $this->workerId = $workerId;
         $this->startDate = $startDate;
         $this->endDate = $endDate;
@@ -46,17 +49,17 @@ final class GetWorkersScheduleQuery
     }
 
     /**
-     * @return Date
+     * @return string
      */
-    public function getStartDate(): Date
+    public function getStartDate(): string
     {
         return $this->startDate;
     }
 
     /**
-     * @return Date
+     * @return string
      */
-    public function getEndDate(): Date
+    public function getEndDate(): string
     {
         return $this->endDate;
     }

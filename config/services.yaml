@@ -17,6 +17,8 @@ services:
         resource: '../src/ScheduleCalculation/'
         exclude:
             - 'Entity/'
+            - 'Repository/'
+            - 'Service/'
             - 'Kernel.php'
             - '../src/Tests/'
 

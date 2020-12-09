@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\ScheduleCalculation\Entity\Worker;
+namespace App\ScheduleCalculation\Entity;
 
 
 use Symfony\Component\Validator\Constraints\Date;
@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Constraints\Date;
  * Отпуск
  *
  *@ORM\Entity
- * @ORM\Table(name="vacation")
+ * @ORM\Table(name="vacations")
  */
 class Vacation
 {
@@ -50,4 +50,20 @@ class Vacation
      * @var Date
      */
     private Date $endDate;
+
+    /**
+     * Vacation constructor.
+     * @param string $id
+     * @param string $workerId
+     * @param Date $startDate
+     * @param Date $endDate
+     */
+    public function __construct(string $id, string $workerId, Date $startDate, Date $endDate)
+    {
+        $this->id = $id;
+        $this->workerId = $workerId;
+        $this->startDate = $startDate;
+        $this->endDate = $endDate;
+    }
+
 }

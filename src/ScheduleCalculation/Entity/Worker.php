@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\ScheduleCalculation\Entity\Worker;
+namespace App\ScheduleCalculation\Entity;
 
 use Symfony\Component\Validator\Constraints\Time;
 
@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Constraints\Time;
  * Работник
  *
  * @ORM\Entity
- * @ORM\Table(name="worker")
+ * @ORM\Table(name="workers")
  */
 class Worker
 {
@@ -68,5 +68,25 @@ class Worker
      * @var string[]
      */
     private array $vacation;
+
+    /**
+     * Worker constructor.
+     * @param string $id
+     * @param Time $startTime
+     * @param Time $endTime
+     * @param Time $startBreak
+     * @param Time $endBreak
+     * @param array|string[] $vacation
+     */
+    public function __construct(string $id, Time $startTime, Time $endTime, Time $startBreak, Time $endBreak, $vacation)
+    {
+        $this->id = $id;
+        $this->startTime = $startTime;
+        $this->endTime = $endTime;
+        $this->startBreak = $startBreak;
+        $this->endBreak = $endBreak;
+        $this->vacation = $vacation;
+    }
+
 
 }

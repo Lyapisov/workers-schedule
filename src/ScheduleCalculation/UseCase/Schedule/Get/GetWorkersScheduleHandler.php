@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\ScheduleCalculation\UseCase\Schedule\Get;
 
+use App\ScheduleCalculation\Service\Holidays\Holidays;
+
 /**
  * Обработчик сценария получения графика работы
  *
@@ -15,22 +17,58 @@ final class GetWorkersScheduleHandler
     /**
      * @var WorkersScheduleReadModelRepository
      */
-    private WorkersScheduleReadModelRepository $readModelRepository;
+    private WorkersScheduleReadModelRepository $workerReadModelRepository;
+
+    /**
+     * @var VocationReadModelRepository
+     */
+    private VocationReadModelRepository $vocationReadModelRepository;
+
+    /**
+     * @var TeamEventsReadModelRepository
+     */
+    private TeamEventsReadModelRepository $teamEventsReadModelRepository;
+
+    /**
+     * @var Holidays
+     */
+    private Holidays $holidaysService;
 
     /**
      * GetWorkersScheduleHandler constructor.
-     * @param WorkersScheduleReadModelRepository $readModelRepository
+     * @param WorkersScheduleReadModelRepository $workerReadModelRepository
+     * @param VocationReadModelRepository $vocationReadModelRepository
+     * @param TeamEventsReadModelRepository $teamEventsReadModelRepository
+     * @param Holidays $holidaysService
      */
-    public function __construct(WorkersScheduleReadModelRepository $readModelRepository)
-    {
-        $this->readModelRepository = $readModelRepository;
+    public function __construct(
+        WorkersScheduleReadModelRepository $workerReadModelRepository,
+        VocationReadModelRepository $vocationReadModelRepository,
+        TeamEventsReadModelRepository $teamEventsReadModelRepository,
+        Holidays $holidaysService
+    ) {
+        $this->workerReadModelRepository = $workerReadModelRepository;
+        $this->vocationReadModelRepository = $vocationReadModelRepository;
+        $this->teamEventsReadModelRepository = $teamEventsReadModelRepository;
+        $this->holidaysService = $holidaysService;
     }
 
-    public function handle(GetWorkersScheduleQuery $query): array {
-        return $this->readModelRepository->find(
-            $query->getWorkerId(),
-            $query->getStartDate(),
-            $query->getEndDate()
-        );
+
+    public function handle(GetWorkersScheduleQuery $query):array {
+
+        $workersHours = $this->workerReadModelRepository->find($query->getWorkerId());
+
+        $teamEvents = $this->teamEventsReadModelRepository->findAll();
+
+        $vocation = $this->vocationReadModelRepository
+            ->findByWorkerId($query->getWorkerId());
+
+        $officialHolidays = $this->holidaysService
+            ->getForPeriod(
+                $query->getStartDate(),
+                $query->getEndDate()
+            );
+
+
     }
 }
