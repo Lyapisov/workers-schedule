@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\ScheduleCalculation\Service\Holidays;
 
+use DateInterval;
+use DatePeriod;
+use DateTimeImmutable;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final class Holidays
@@ -28,8 +31,16 @@ final class Holidays
         string $endDate
     ) {
 
-//        $startDate = $startDate->format('Ymd');
-//        $endDate = $endDate->format('Ymd');
+        $allDays = $this->generateDateInterval($startDate, $endDate);
+        $allDaysStatus = $this->getAllDaysStatusByApi($startDate, $endDate);
+
+        $daysWithStatus = array_combine($allDays, $allDaysStatus);
+        $holidayDays = $this->getHolidayDaysOnly($daysWithStatus);
+
+        return $holidayDays;
+    }
+
+    private function getAllDaysStatusByApi(string $startDate, string $endDate): array {
 
         $response = $this->client->request(
             'GET',
@@ -37,10 +48,40 @@ final class Holidays
             . $startDate . '&date2=' . $endDate
             . '&pre=0&delimeter=%3B&covid=0'
         );
-        $content = $response->getContent();
+        $resultApi = $response->getContent();
+        $resultApi = explode(";", $resultApi);
 
-        return $content;
+        return $resultApi;
+    }
 
+    private function generateDateInterval(string $startDate, string $endDate): array {
+
+        $dateInterval = [];
+
+        $begin = new DateTimeImmutable($startDate);
+        $end = new DateTimeImmutable($endDate);
+        $end = $end->modify('+1 day');
+
+        $interval = DateInterval::createFromDateString('1 day');
+        $period = new DatePeriod($begin, $interval, $end);
+
+        foreach ($period as $dt) {
+            $dateInterval[] = $dt->format("Y-m-d");
+        }
+
+        return $dateInterval;
+    }
+
+    private function getHolidayDaysOnly(array $allDays): array {
+
+        $holidayDays = $allDays;
+
+        foreach($holidayDays as $day => $status){
+            if ($status == 0){
+                unset($holidayDays[$day]);
+            }
+        }
+        return $holidayDays;
     }
 
 }

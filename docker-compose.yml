@@ -39,11 +39,11 @@ services:
       - db:/var/lib/postgresql/data
     restart: always
     environment:
-      POSTGRES_USER: food
-      POSTGRES_PASSWORD: foodpass
-      POSTGRES_DB: food
+      POSTGRES_USER: dbuser
+      POSTGRES_PASSWORD: dbuserpass
+      POSTGRES_DB: schedule
     ports:
-      - "4400:5111"
+      - "5432:5432"
 
 volumes:
   db:

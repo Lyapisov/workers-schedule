@@ -17,17 +17,17 @@ final class GetWorkersScheduleHandler
     /**
      * @var WorkerRepository
      */
-    private WorkerRepository $workerReadModelRepository;
+    private WorkerRepository $workerRepository;
 
     /**
      * @var VacationRepository
      */
-    private VacationRepository $vocationReadModelRepository;
+    private VacationRepository $vocationRepository;
 
     /**
      * @var TeamEventsRepository
      */
-    private TeamEventsRepository $teamEventsReadModelRepository;
+    private TeamEventsRepository $teamEventsRepository;
 
     /**
      * @var Holidays
@@ -36,31 +36,31 @@ final class GetWorkersScheduleHandler
 
     /**
      * GetWorkersScheduleHandler constructor.
-     * @param WorkerRepository $workerReadModelRepository
-     * @param VacationRepository $vocationReadModelRepository
-     * @param TeamEventsRepository $teamEventsReadModelRepository
+     * @param WorkerRepository $workerRepository
+     * @param VacationRepository $vocationRepository
+     * @param TeamEventsRepository $teamEventsRepository
      * @param Holidays $holidaysService
      */
     public function __construct(
-        WorkerRepository $workerReadModelRepository,
-        VacationRepository $vocationReadModelRepository,
-        TeamEventsRepository $teamEventsReadModelRepository,
+        WorkerRepository $workerRepository,
+        VacationRepository $vocationRepository,
+        TeamEventsRepository $teamEventsRepository,
         Holidays $holidaysService
     ) {
-        $this->workerReadModelRepository = $workerReadModelRepository;
-        $this->vocationReadModelRepository = $vocationReadModelRepository;
-        $this->teamEventsReadModelRepository = $teamEventsReadModelRepository;
+        $this->workerRepository = $workerRepository;
+        $this->vocationRepository = $vocationRepository;
+        $this->teamEventsRepository = $teamEventsRepository;
         $this->holidaysService = $holidaysService;
     }
 
 
     public function handle(GetWorkersScheduleQuery $query):array {
 
-        $workersHours = $this->workerReadModelRepository->find($query->getWorkerId());
+        $workersHours = $this->workerRepository->find($query->getWorkerId());
 
-        $teamEvents = $this->teamEventsReadModelRepository->findAll();
+        $teamEvents = $this->teamEventsRepository->findAll();
 
-        $vocation = $this->vocationReadModelRepository
+        $vocation = $this->vocationRepository
             ->findByWorkerId($query->getWorkerId());
 
         $officialHolidays = $this->holidaysService
@@ -69,6 +69,7 @@ final class GetWorkersScheduleHandler
                 $query->getEndDate()
             );
 
+        return $officialHolidays;
 
     }
 }

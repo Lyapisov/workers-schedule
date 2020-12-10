@@ -19,6 +19,7 @@ services:
             - 'Entity/'
             - 'Repository/'
             - 'Service/'
+            - 'UseCase/'
             - 'Kernel.php'
             - '../src/Tests/'
 

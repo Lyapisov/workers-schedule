@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\ScheduleCalculation\Entity;
 
-
-use Symfony\Component\Validator\Constraints\Date;
+use DateTimeImmutable;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Отпуск
  *
- *@ORM\Entity
+ * @ORM\Entity
  * @ORM\Table(name="vacations")
  */
 class Vacation
@@ -38,32 +39,33 @@ class Vacation
      *
      * @ORM\Column(name="start_date", type="date")
      *
-     * @var Date
+     * @var DateTimeImmutable
      */
-    private Date $startDate;
+    private DateTimeImmutable $startDate;
 
     /**
      * Дата окончания отпуска
      *
      * @ORM\Column(name="end_date", type="date")
      *
-     * @var Date
+     * @var DateTimeImmutable
      */
-    private Date $endDate;
+    private DateTimeImmutable $endDate;
 
     /**
      * Vacation constructor.
      * @param string $id
      * @param string $workerId
-     * @param Date $startDate
-     * @param Date $endDate
+     * @param DateTimeImmutable $startDate
+     * @param DateTimeImmutable $endDate
      */
-    public function __construct(string $id, string $workerId, Date $startDate, Date $endDate)
+    public function __construct(string $id, string $workerId, DateTimeImmutable $startDate, DateTimeImmutable $endDate)
     {
         $this->id = $id;
         $this->workerId = $workerId;
         $this->startDate = $startDate;
         $this->endDate = $endDate;
     }
+
 
 }

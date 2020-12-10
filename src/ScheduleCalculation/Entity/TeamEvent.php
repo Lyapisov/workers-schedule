@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\ScheduleCalculation\Entity;
 
 use DateTimeImmutable;
-use Symfony\Component\Validator\Constraints\Time;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Командные мероприятия
  *
- *@ORM\Entity
+ * @ORM\Entity
  * @ORM\Table(name="team-events")
  */
 class TeamEvent
@@ -47,30 +47,30 @@ class TeamEvent
     /**
      * Начало мероприятия
      *
-     * @ORM\Column(name="start_time", type="time[(0)]")
+     * @ORM\Column(name="start_time", type="time")
      *
-     * @var Time
+     * @var DateTimeImmutable
      */
-    private Time $startTime;
+    private DateTimeImmutable $startTime;
 
     /**
      * Окончание мероприятия
      *
-     * @ORM\Column(name="end_time", type="time[(0)]")
+     * @ORM\Column(name="end_time", type="time")
      *
-     * @var Time
+     * @var DateTimeImmutable
      */
-    private Time $endTime;
+    private DateTimeImmutable $endTime;
 
     /**
      * TeamEvent constructor.
      * @param string $id
      * @param DateTimeImmutable $startDate
      * @param DateTimeImmutable $endDate
-     * @param Time $startTime
-     * @param Time $endTime
+     * @param DateTimeImmutable $startTime
+     * @param DateTimeImmutable $endTime
      */
-    public function __construct(string $id, DateTimeImmutable $startDate, DateTimeImmutable $endDate, Time $startTime, Time $endTime)
+    public function __construct(string $id, DateTimeImmutable $startDate, DateTimeImmutable $endDate, DateTimeImmutable $startTime, DateTimeImmutable $endTime)
     {
         $this->id = $id;
         $this->startDate = $startDate;

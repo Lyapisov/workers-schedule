@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\ScheduleCalculation\Repository;
 
+
 use App\ScheduleCalculation\Entity\Worker;
-use \App\ScheduleCalculation\UseCase\Schedule\Get\WorkerRepository;
+use App\ScheduleCalculation\UseCase\Schedule\Get\WorkerRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class DoctrineWorkerRepository implements WorkerRepository

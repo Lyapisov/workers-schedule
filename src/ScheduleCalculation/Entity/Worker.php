@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\ScheduleCalculation\Entity;
 
-use Symfony\Component\Validator\Constraints\Time;
+use DateTimeImmutable;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Работник
@@ -27,43 +28,43 @@ class Worker
     /**
      * Начало рабочего дня
      *
-     * @ORM\Column(name="start_time", type="time[(0)]")
+     * @ORM\Column(name="start_time", type="time")
      *
-     * @var Time
+     * @var DateTimeImmutable
      */
-    private Time $startTime;
+    private DateTimeImmutable $startTime;
 
     /**
      * Конец рабочего дня
      *
-     * @ORM\Column(name="end_time", type="time[(0)]")
+     * @ORM\Column(name="end_time", type="time")
      *
-     * @var Time
+     * @var DateTimeImmutable
      */
-    private Time $endTime;
+    private DateTimeImmutable $endTime;
 
     /**
      * Начало обеденного перерыва
      *
-     * @ORM\Column(name="start_break", type="time[(0)]")
+     * @ORM\Column(name="start_break", type="time")
      *
-     * @var Time
+     * @var DateTimeImmutable
      */
-    private Time $startBreak;
+    private DateTimeImmutable $startBreak;
 
     /**
      * Конец обеденного перерыва
      *
-     * @ORM\Column(name="end_break", type="time[(0)]")
+     * @ORM\Column(name="end_break", type="time")
      *
-     * @var Time
+     * @var DateTimeImmutable
      */
-    private Time $endBreak;
+    private DateTimeImmutable $endBreak;
 
     /**
      * Отпуска работника
      *
-     * @ORM\Column(name="vocation", type="time[(0)]")
+     * @ORM\Column(name="vocation", type="time")
      *
      * @var string[]
      */
@@ -72,13 +73,13 @@ class Worker
     /**
      * Worker constructor.
      * @param string $id
-     * @param Time $startTime
-     * @param Time $endTime
-     * @param Time $startBreak
-     * @param Time $endBreak
+     * @param DateTimeImmutable $startTime
+     * @param DateTimeImmutable $endTime
+     * @param DateTimeImmutable $startBreak
+     * @param DateTimeImmutable $endBreak
      * @param array|string[] $vacation
      */
-    public function __construct(string $id, Time $startTime, Time $endTime, Time $startBreak, Time $endBreak, $vacation)
+    public function __construct(string $id, DateTimeImmutable $startTime, DateTimeImmutable $endTime, DateTimeImmutable $startBreak, DateTimeImmutable $endBreak, $vacation)
     {
         $this->id = $id;
         $this->startTime = $startTime;

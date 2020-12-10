@@ -1,9 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\ScheduleCalculation\UseCase\Schedule\Get;
-
-use Symfony\Component\Validator\Constraints\Date;
 
 interface WorkerRepository
 {
