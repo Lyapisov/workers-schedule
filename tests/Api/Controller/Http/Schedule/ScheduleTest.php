@@ -9,18 +9,41 @@ use App\ScheduleCalculation\Entity\Vacation;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use App\ScheduleCalculation\Entity\Worker;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 
-final class ScheduleTest extends KernelTestCase
+final class ScheduleTest extends WebTestCase
 {
-    protected KernelBrowser $client;
+
 
     const FIRST_WORKER_ID = 'idWorker1';
     const FIRST_VACATION_ID = 'idVacation1';
     const SECOND_VACATION_ID = 'idVacation2';
     const FIRST_TEAM_EVENT_ID = 'idTeamEvent1';
+
+    public EntityManagerInterface $em;
+    protected KernelBrowser $client;
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->client = static::createClient();
+        $this->client->disableReboot();
+        $this->em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
+        $this->em->beginTransaction();
+        $this->em->getConnection()->setAutoCommit(false);
+
+    }
+
+    protected function tearDown(): void
+    {
+        $this->em->getConnection()->rollback();
+        $this->em->close();
+        parent::tearDown();
+    }
 
     public function testSuccessful() {
 
@@ -61,7 +84,7 @@ final class ScheduleTest extends KernelTestCase
 
         $this->client->request(
             'GET',
-            self::formUrl('id1', '20201012', '20201013')
+            self::formUrl(self::FIRST_WORKER_ID, '20201012', '20201013')
         );
 
         $expectedResponseContent =
@@ -98,7 +121,14 @@ final class ScheduleTest extends KernelTestCase
 
         $response = $this->client->getResponse();
 
+        $expectedResponseContent = trim(json_encode($expectedResponseContent));
+
         $this->assertEquals($expectedResponseContent, $response);
+
+//        $this->assertEquals(
+//            Response::HTTP_OK,
+//            $response->getStatusCode()
+//        );
 
     }
 
@@ -112,23 +142,10 @@ final class ScheduleTest extends KernelTestCase
 
     protected function saveEntity(object $entity)
     {
-        static::getEntityManager()->persist($entity);
-        static::getEntityManager()->flush();
-        static::getEntityManager()->clear();
+        $this->em->persist($entity);
+        $this->em->flush();
+        $this->em->clear();
     }
-
-    public static function getEntityManager(): ?EntityManagerInterface
-    {
-        if (static::$kernel) {
-            return static::$kernel
-                ->getContainer()
-                ->get('doctrine.orm.entity_manager')
-                ;
-        }
-
-        return null;
-    }
-
 
     /**
      * Форматирует данные в формате json, делая их более читаемыми.

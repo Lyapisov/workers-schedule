@@ -87,24 +87,6 @@ final class GetWorkersScheduleHandler
         }
 
         return $readModel;
-
-//            array_map(fn($workingDay) => new ScheduleReadModel(
-//
-//            $workingDay->getDate(),
-//            $workingDay->getWorkingHours()->getStartBeforeBreak(),
-//            $workingDay->getWorkingHours()->getEndBeforeBreak(),
-//            $workingDay->getWorkingHours()->getStartAfterBreak(),
-//            $workingDay->getWorkingHours()->getEndAfterBreak(),
-//
-//            ), $workingDays);
-
-
-
-
-//        echo "<pre>";
-//        var_dump($workingDays);
-//        echo "</pre>";
-
     }
 
     private function getCalendarDates(string $startDate, string $endDate): array {

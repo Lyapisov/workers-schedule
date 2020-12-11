@@ -34,7 +34,8 @@ final class OneWorker
      *     methods={"GET"}
      * )
      *
-     * @return string
+     * @param Request $request
+     * @return JsonResponse
      */
     public function __invoke(Request $request): JsonResponse
     {
@@ -43,11 +44,10 @@ final class OneWorker
             $request->get('workerId', ''),
             $request->get('startDate', ''),
             $request->get('endDate', '')
-
         ));
 
-        $responseContent = array_map(fn(ScheduleReadModel $readModel) => [
-            'schedule' => [
+        $responseContent = [
+            'schedule' => array_map(fn(ScheduleReadModel $readModel) => [
                 'day' => $readModel->getDay()->format('Y-m-d'),
                 'timeRanges' => [
                     [
@@ -59,8 +59,8 @@ final class OneWorker
                         'end' => $readModel->getEndAfterBreak()->format('H:i:s')
                     ],
                 ]
-            ]
-        ], $readModel);
+            ], $readModel)
+        ];
 
         return new JsonResponse($responseContent, JsonResponse::HTTP_OK);
     }
