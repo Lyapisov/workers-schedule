@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\ScheduleCalculation\Service\Holidays;
+namespace App\ScheduleCalculation\Service;
 
 use DateInterval;
 use DatePeriod;
 use DateTimeImmutable;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-final class Holidays
+final class DaysWithStatusService
 {
 
     /**
@@ -35,9 +35,10 @@ final class Holidays
         $allDaysStatus = $this->getAllDaysStatusByApi($startDate, $endDate);
 
         $daysWithStatus = array_combine($allDays, $allDaysStatus);
-        $holidayDays = $this->getHolidayDaysOnly($daysWithStatus);
+//        $holidayDays = $this->getHolidayDaysOnly($daysWithStatus);
 
-        return $holidayDays;
+        return $daysWithStatus;
+
     }
 
     private function getAllDaysStatusByApi(string $startDate, string $endDate): array {
@@ -50,13 +51,10 @@ final class Holidays
         );
         $resultApi = $response->getContent();
         $resultApi = explode(";", $resultApi);
-
         return $resultApi;
     }
 
     private function generateDateInterval(string $startDate, string $endDate): array {
-
-        $dateInterval = [];
 
         $begin = new DateTimeImmutable($startDate);
         $end = new DateTimeImmutable($endDate);
@@ -64,6 +62,8 @@ final class Holidays
 
         $interval = DateInterval::createFromDateString('1 day');
         $period = new DatePeriod($begin, $interval, $end);
+
+        $dateInterval = [];
 
         foreach ($period as $dt) {
             $dateInterval[] = $dt->format("Y-m-d");

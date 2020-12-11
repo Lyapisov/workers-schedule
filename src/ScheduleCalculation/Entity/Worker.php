@@ -28,7 +28,7 @@ class Worker
     /**
      * Начало рабочего дня
      *
-     * @ORM\Column(name="start_time", type="time")
+     * @ORM\Column(name="start_time", type="time_immutable")
      *
      * @var DateTimeImmutable
      */
@@ -37,7 +37,7 @@ class Worker
     /**
      * Конец рабочего дня
      *
-     * @ORM\Column(name="end_time", type="time")
+     * @ORM\Column(name="end_time", type="time_immutable")
      *
      * @var DateTimeImmutable
      */
@@ -46,7 +46,7 @@ class Worker
     /**
      * Начало обеденного перерыва
      *
-     * @ORM\Column(name="start_break", type="time")
+     * @ORM\Column(name="start_break", type="time_immutable")
      *
      * @var DateTimeImmutable
      */
@@ -55,7 +55,7 @@ class Worker
     /**
      * Конец обеденного перерыва
      *
-     * @ORM\Column(name="end_break", type="time")
+     * @ORM\Column(name="end_break", type="time_immutable")
      *
      * @var DateTimeImmutable
      */
@@ -64,7 +64,7 @@ class Worker
     /**
      * Отпуска работника
      *
-     * @ORM\Column(name="vocation", type="time")
+     * @ORM\Column(name="vacation", type="array")
      *
      * @var string[]
      */
@@ -79,8 +79,13 @@ class Worker
      * @param DateTimeImmutable $endBreak
      * @param array|string[] $vacation
      */
-    public function __construct(string $id, DateTimeImmutable $startTime, DateTimeImmutable $endTime, DateTimeImmutable $startBreak, DateTimeImmutable $endBreak, $vacation)
-    {
+    public function __construct(
+        string $id,
+        DateTimeImmutable $startTime,
+        DateTimeImmutable $endTime,
+        DateTimeImmutable $startBreak,
+        DateTimeImmutable $endBreak, $vacation
+    ) {
         $this->id = $id;
         $this->startTime = $startTime;
         $this->endTime = $endTime;
@@ -89,5 +94,51 @@ class Worker
         $this->vacation = $vacation;
     }
 
+    /**
+     * @return string
+     */
+    public function getId(): string
+    {
+        return $this->id;
+    }
 
+    /**
+     * @return DateTimeImmutable
+     */
+    public function getStartTime(): DateTimeImmutable
+    {
+        return $this->startTime;
+    }
+
+    /**
+     * @return DateTimeImmutable
+     */
+    public function getEndTime(): DateTimeImmutable
+    {
+        return $this->endTime;
+    }
+
+    /**
+     * @return DateTimeImmutable
+     */
+    public function getStartBreak(): DateTimeImmutable
+    {
+        return $this->startBreak;
+    }
+
+    /**
+     * @return DateTimeImmutable
+     */
+    public function getEndBreak(): DateTimeImmutable
+    {
+        return $this->endBreak;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getVacation(): array
+    {
+        return $this->vacation;
+    }
 }

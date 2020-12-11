@@ -23,62 +23,56 @@ final class CalendarDate
      *
      * @var bool
      */
-    private bool $isHoliday = false;
+    private bool $isHoliday;
 
     /**
-     * Если дата - отпускной день
+     * Мероприятие
      *
-     * @var bool
+     * @var TeamEvent|null
      */
-    private bool $isVacation = false;
+    private ?TeamEvent $teamEvent;
 
     /**
-     * Если на дату назначено мероприятие
-     *
-     * @var bool
+     * CalendarDate constructor.
+     * @param DateTimeImmutable $value
+     * @param bool $isHoliday
+     * @param TeamEvent|null $teamEvent
      */
-    private bool $isEvent = false;
+    public function __construct(
+        DateTimeImmutable $value,
+        bool $isHoliday,
+        ?TeamEvent $teamEvent = null
+    ) {
+        $this->value = $value;
+        $this->isHoliday = $isHoliday;
+        $this->teamEvent = $teamEvent;
+    }
 
     /**
-     * Начало мероприятия
-     *
-     * @var DateTimeImmutable|null
+     * @return DateTimeImmutable
      */
-    private ?DateTimeImmutable $eventStartHour;
+    public function getValue(): DateTimeImmutable
+    {
+        return $this->value;
+    }
 
     /**
-     * Конец мероприятия
-     *
-     * @var DateTimeImmutable|null
+     * @return bool
      */
-    private ?DateTimeImmutable $eventEndHour;
+    public function isHoliday(): bool
+    {
+        return $this->isHoliday;
+    }
 
     /**
-     * Время начала работы до обеда
-     *
-     * @var DateTimeImmutable|null
+     * @return TeamEvent|null
      */
-    private ?DateTimeImmutable $startWorkingTimeBeforeBreak;
+    public function getTeamEvent(): ?TeamEvent
+    {
+        return $this->teamEvent;
+    }
 
-    /**
-     * Время окончания работы до обеда
-     *
-     * @var DateTimeImmutable|null
-     */
-    private ?DateTimeImmutable $endWorkingTimeBeforeBreak;
 
-    /**
-     * Время начала работы после обеда
-     *
-     * @var DateTimeImmutable|null
-     */
-    private ?DateTimeImmutable $startWorkingTimeAfterBreak;
 
-    /**
-     * Время окончания работы после обеда
-     *
-     * @var DateTimeImmutable|null
-     */
-    private ?DateTimeImmutable $endWorkingTimeAfterBreak;
 
 }

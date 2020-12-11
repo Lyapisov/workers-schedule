@@ -37,7 +37,7 @@ class Vacation
     /**
      * Дата начала отпуска
      *
-     * @ORM\Column(name="start_date", type="date")
+     * @ORM\Column(name="start_date", type="datetime_immutable")
      *
      * @var DateTimeImmutable
      */
@@ -46,7 +46,7 @@ class Vacation
     /**
      * Дата окончания отпуска
      *
-     * @ORM\Column(name="end_date", type="date")
+     * @ORM\Column(name="end_date", type="datetime_immutable")
      *
      * @var DateTimeImmutable
      */
@@ -59,13 +59,48 @@ class Vacation
      * @param DateTimeImmutable $startDate
      * @param DateTimeImmutable $endDate
      */
-    public function __construct(string $id, string $workerId, DateTimeImmutable $startDate, DateTimeImmutable $endDate)
-    {
+    public function __construct(
+        string $id,
+        string $workerId,
+        DateTimeImmutable $startDate,
+        DateTimeImmutable $endDate
+    ) {
         $this->id = $id;
         $this->workerId = $workerId;
         $this->startDate = $startDate;
         $this->endDate = $endDate;
     }
 
+    /**
+     * @return string
+     */
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWorkerId(): string
+    {
+        return $this->workerId;
+    }
+
+    /**
+     * @return DateTimeImmutable
+     */
+    public function getStartDate(): DateTimeImmutable
+    {
+        return $this->startDate;
+    }
+
+    /**
+     * @return DateTimeImmutable
+     */
+    public function getEndDate(): DateTimeImmutable
+    {
+        return $this->endDate;
+    }
 
 }

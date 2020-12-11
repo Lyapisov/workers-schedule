@@ -1,71 +1,56 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\ScheduleCalculation\Entity;
 
 use DateTimeImmutable;
-use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Командные мероприятия
- *
- * @ORM\Entity
- * @ORM\Table(name="team_events")
- */
-class TeamEvent
+final class EventDay
 {
-
     /**
-     * Идентификатор
+     * Дата дня мероприятия
      *
-     * @ORM\Column(name="id", type="string")
-     * @ORM\Id
-     *
-     * @var string
+     * @var DateTimeImmutable
      */
-    private string $id;
+    private DateTimeImmutable $date;
 
     /**
-     * Дата и время начала мероприятия
-     *
-     * @ORM\Column(name="start_date", type="datetime_immutable")
+     * Время начала мероприятия этого дня
      *
      * @var DateTimeImmutable
      */
     private DateTimeImmutable $start;
 
     /**
-     * Дата и время окончания мероприятия
-     *
-     * @ORM\Column(name="end_date", type="datetime_immutable")
+     * Время окончания мероприятия этого дня
      *
      * @var DateTimeImmutable
      */
     private DateTimeImmutable $end;
 
     /**
-     * TeamEvent constructor.
-     * @param string $id
+     * EventDay constructor.
+     * @param DateTimeImmutable $date
      * @param DateTimeImmutable $start
      * @param DateTimeImmutable $end
      */
     public function __construct(
-        string $id,
+        DateTimeImmutable $date,
         DateTimeImmutable $start,
         DateTimeImmutable $end
     ) {
-        $this->id = $id;
+        $this->date = $date;
         $this->start = $start;
         $this->end = $end;
     }
 
+
     /**
-     * @return string
+     * @return DateTimeImmutable
      */
-    public function getId(): string
+    public function getDate(): DateTimeImmutable
     {
-        return $this->id;
+        return $this->date;
     }
 
     /**
@@ -83,6 +68,5 @@ class TeamEvent
     {
         return $this->end;
     }
-
 
 }
