@@ -6,14 +6,13 @@ namespace App\Api\Controller\Http\Schedule;
 
 use App\ScheduleCalculation\UseCase\Schedule\Get\GetWorkersScheduleHandler;
 use App\ScheduleCalculation\UseCase\Schedule\Get\GetWorkersScheduleQuery;
+use App\ScheduleCalculation\UseCase\Schedule\Get\ScheduleReadModel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Класс получения графика работника
- * Class ListAction
- * @package App\ApiGateway\Controller\Http\Schedule
  */
 final class OneWorker
 {
@@ -28,7 +27,6 @@ final class OneWorker
     {
         $this->getWorkersScheduleHandler = $getWorkersScheduleHandler;
     }
-
 
     /**
      * @Route("/workers-schedule",
@@ -48,8 +46,23 @@ final class OneWorker
 
         ));
 
+        $responseContent = array_map(fn(ScheduleReadModel $readModel) => [
+            'schedule' => [
+                'day' => $readModel->getDay()->format('Y-m-d'),
+                'timeRanges' => [
+                    [
+                        'start' => $readModel->getStartBeforeBreak()->format('H:i:s'),
+                        'end' => $readModel->getEndBeforeBreak()->format('H:i:s')
+                    ],
+                    [
+                        'start' => $readModel->getStartAfterBreak()->format('H:i:s'),
+                        'end' => $readModel->getEndAfterBreak()->format('H:i:s')
+                    ],
+                ]
+            ]
+        ], $readModel);
 
-        return new JsonResponse($readModel, JsonResponse::HTTP_OK);
+        return new JsonResponse($responseContent, JsonResponse::HTTP_OK);
     }
 
 }

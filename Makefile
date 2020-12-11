@@ -10,5 +10,5 @@ docker-down:
 cli:
 	docker-compose run --rm php-cli
 
-symfony-console:
-	docker-compose run --rm php-cli php bin/console
+run-tests:
+	docker-compose run --rm php-cli bin/phpunit

@@ -2,79 +2,61 @@
 
 declare(strict_types=1);
 
-namespace App\ScheduleCalculation\UseCase\Schedule\Get;
+namespace App\ScheduleCalculation\Entity;
 
 use DateTimeImmutable;
 
 /**
- * Модель для чтения рабочего графика
+ * Рабочие часы
  */
-final class ScheduleReadModel
+final class WorkingHours
 {
-
     /**
-     * Номер рабочего дня по календарю
-     *
-     * @var DateTimeImmutable
-     */
-    private DateTimeImmutable $day;
-
-    /**
-     * Старт рабочего времени до обеда
+     * Начало рабочего дня до обеда
      *
      * @var DateTimeImmutable
      */
     private DateTimeImmutable $startBeforeBreak;
 
     /**
-     * Конец рабочего времени до обеда
+     * Конец рабочего дня до обеда
      *
      * @var DateTimeImmutable
      */
     private DateTimeImmutable $endBeforeBreak;
 
     /**
-     * Старт рабочего времени после обеда
+     * Начало рабочего дня после обеда
      *
      * @var DateTimeImmutable
      */
     private DateTimeImmutable $startAfterBreak;
 
     /**
-     * Конец рабочего времени после обеда
+     * Конец рабочего дня после обеда
      *
      * @var DateTimeImmutable
      */
     private DateTimeImmutable $endAfterBreak;
 
     /**
-     * ScheduleReadModel constructor.
-     * @param DateTimeImmutable $day
+     * WorkingHours constructor.
      * @param DateTimeImmutable $startBeforeBreak
      * @param DateTimeImmutable $endBeforeBreak
      * @param DateTimeImmutable $startAfterBreak
      * @param DateTimeImmutable $endAfterBreak
      */
     public function __construct(
-        DateTimeImmutable $day,
         DateTimeImmutable $startBeforeBreak,
         DateTimeImmutable $endBeforeBreak,
         DateTimeImmutable $startAfterBreak,
         DateTimeImmutable $endAfterBreak
     ) {
-        $this->day = $day;
         $this->startBeforeBreak = $startBeforeBreak;
         $this->endBeforeBreak = $endBeforeBreak;
         $this->startAfterBreak = $startAfterBreak;
         $this->endAfterBreak = $endAfterBreak;
-    }
 
-    /**
-     * @return DateTimeImmutable
-     */
-    public function getDay(): DateTimeImmutable
-    {
-        return $this->day;
     }
 
     /**
@@ -107,6 +89,38 @@ final class ScheduleReadModel
     public function getEndAfterBreak(): DateTimeImmutable
     {
         return $this->endAfterBreak;
+    }
+
+    /**
+     * @param DateTimeImmutable $startBeforeBreak
+     */
+    public function setStartBeforeBreak(DateTimeImmutable $startBeforeBreak): void
+    {
+        $this->startBeforeBreak = $startBeforeBreak;
+    }
+
+    /**
+     * @param DateTimeImmutable $endBeforeBreak
+     */
+    public function setEndBeforeBreak(DateTimeImmutable $endBeforeBreak): void
+    {
+        $this->endBeforeBreak = $endBeforeBreak;
+    }
+
+    /**
+     * @param DateTimeImmutable $startAfterBreak
+     */
+    public function setStartAfterBreak(DateTimeImmutable $startAfterBreak): void
+    {
+        $this->startAfterBreak = $startAfterBreak;
+    }
+
+    /**
+     * @param DateTimeImmutable $endAfterBreak
+     */
+    public function setEndAfterBreak(DateTimeImmutable $endAfterBreak): void
+    {
+        $this->endAfterBreak = $endAfterBreak;
     }
 
 
