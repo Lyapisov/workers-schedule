@@ -9,9 +9,11 @@ use DatePeriod;
 use DateTimeImmutable;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
+/**
+ * Сервис для получения списка дат с статусами о рабочем или нерабочем дне
+ */
 final class DaysWithStatusService
 {
-
     /**
      * @var HttpClientInterface
      */
@@ -38,7 +40,6 @@ final class DaysWithStatusService
 //        $holidayDays = $this->getHolidayDaysOnly($daysWithStatus);
 
         return $daysWithStatus;
-
     }
 
     private function getAllDaysStatusByApi(string $startDate, string $endDate): array {

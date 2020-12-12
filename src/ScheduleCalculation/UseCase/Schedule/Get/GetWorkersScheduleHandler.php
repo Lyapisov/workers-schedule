@@ -61,21 +61,22 @@ final class GetWorkersScheduleHandler
 
     public function handle(GetWorkersScheduleQuery $query):array {
 
-        $calendarDates = $this->getCalendarDates(
-            $query->getStartDate(),
-            $query->getEndDate()
-        );
+        $daysWithStatusData = $this->daysService
+            ->getForPeriod($query->getStartDate(), $query->getEndDate());
+        $calendarDates = $this->getCalendarDates($daysWithStatusData);
 
-        $vacationDays = $this->getVacationDays($query->getWorkerId());
+        $vacationData = $this->vocationRepository->findByWorkerId($query->getWorkerId());
+        $vacationDays = $this->getVacationDays($vacationData);
 
-        $workingDays = $this->getWorkingDays($query->getWorkerId(), $calendarDates, $vacationDays);
+        $workerData = $this->workerRepository->find($query->getWorkerId());
+        $workingDays = $this->getWorkingDays($workerData, $calendarDates, $vacationDays);
 
-        $eventDays = $this->getEventDays();
+        $teamEventsData = $this->teamEventsRepository->findAll();
+        $eventDays = $this->getEventDays($teamEventsData);
 
         $this->correctWorkingDays($workingDays, $eventDays);
 
         $readModel = [];
-
         foreach ($workingDays as $day) {
             $readModel[] = new ScheduleReadModel(
                 $day->getDate(),
@@ -85,13 +86,10 @@ final class GetWorkersScheduleHandler
                 $day->getWorkingHours()->getEndAfterBreak(),
             );
         }
-
         return $readModel;
     }
 
-    private function getCalendarDates(string $startDate, string $endDate): array {
-        $daysWithStatus = $this->daysService
-            ->getForPeriod($startDate, $endDate);
+    private function getCalendarDates(array $daysWithStatus): array {
 
         $calendarDate = [];
         foreach ($daysWithStatus as $day => $isHoliday) {
@@ -99,18 +97,15 @@ final class GetWorkersScheduleHandler
                 DateTimeImmutable::createFromFormat("Y-m-d H:i:s", $day . ' 00:00:00'),
                 (bool)$isHoliday
             );
-
-
         }
         return $calendarDate;
     }
 
-    private function getVacationDays(string $workerId): array {
-        $vacationData = $this->vocationRepository
-            ->findByWorkerId($workerId);
+    private function getVacationDays(array $vacationData): array {
 
         $vacationDays = [];
         foreach ($vacationData as $vacation){
+
             $begin = new DateTimeImmutable($vacation["startDate"]->format("Y-m-d"));
             $end = new DateTimeImmutable($vacation["endDate"]->format("Y-m-d"));
             $end = $end->modify('+1 day');
@@ -122,13 +117,14 @@ final class GetWorkersScheduleHandler
                 $vacationDays[] = new VacationDay($date);
             }
         }
-
         return $vacationDays;
     }
 
-    private function getWorkingDays(string $workerId, array $calendarDates, array $vacationDays): array {
-
-        $workerData = $this->workerRepository->find($workerId);
+    private function getWorkingDays(
+        array $workerData,
+        array $calendarDates,
+        array $vacationDays
+    ): array {
 
         $workingDays = [];
         foreach ($calendarDates as $date) {
@@ -153,30 +149,26 @@ final class GetWorkersScheduleHandler
                         $workerData[0]['endBreak'],
                     )
                 );
-
             }
         }
         return $workingDays;
     }
 
-    private function getEventDays(): array {
-
-        $teamEvents = $this->teamEventsRepository->findAll();
+    private function getEventDays(array $teamEvents): array {
 
         $eventDays = [];
         foreach ($teamEvents as $event) {
 
-            $a = DateTimeImmutable::createFromFormat('Y-m-d', $event["start"]->format('Y-m-d'));
-            $b = DateTimeImmutable::createFromFormat('Y-m-d', $event["end"]->format('Y-m-d'));
-
-            $begin = $a;
-            $end = $b->modify('+1 day');
+            $begin = DateTimeImmutable::createFromFormat('Y-m-d', $event["start"]
+                ->format('Y-m-d'));;
+            $end = DateTimeImmutable::createFromFormat('Y-m-d', $event["end"]
+                ->format('Y-m-d'))
+                ->modify('+1 day');
 
             $interval = DateInterval::createFromDateString('1 day');
             $period = new DatePeriod($begin, $interval, $end);
 
             $amountDays = iterator_count($period);
-
             for ($i = 1; $i <= $amountDays; $i++) {
 
                 $date = $period->getStartDate();
@@ -190,9 +182,7 @@ final class GetWorkersScheduleHandler
                 if ($amountDays > 1) {
                     $end = DateTimeImmutable::createFromFormat('H:i:s', '23:59:59');
                 }
-                if ($i == $amountDays) {
-                    $end = $event["end"];
-                }
+                if ($i == $amountDays) $end = $event["end"];
 
                 $eventDays[] = new EventDay(
                     $date,
@@ -205,6 +195,7 @@ final class GetWorkersScheduleHandler
     }
 
     private function correctWorkingDays(array $workingDays, array $eventDays): void {
+
         foreach ($workingDays as $workDay) {
             foreach ($eventDays as $eventDay){
 
@@ -219,7 +210,9 @@ final class GetWorkersScheduleHandler
                 $endAfterBreak = new DateTimeImmutable($workDay->getWorkingHours()->getEndAfterBreak()->format('H:i:s'));
                 $ifDayNoPlanClose = new DateTimeImmutable('00:00:00');
 
+                //TODO Добавить проверки для большей гибкости при различном времени начала и окончания мероприятий
                 if ($workDayWithoutHours == $eventDayWithoutHours) {
+
                     if ($startEventDay > $startBeforeBreak && $startEventDay < $endBeforeBreak) {
                         $workDay->getWorkingHours()->setEndBeforeBreak($startEventDay);
                         $workDay->getWorkingHours()->setStartAfterBreak($ifDayNoPlanClose);
@@ -243,5 +236,4 @@ final class GetWorkersScheduleHandler
             }
         }
     }
-
 }

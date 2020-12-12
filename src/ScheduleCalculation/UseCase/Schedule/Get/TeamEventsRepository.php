@@ -7,7 +7,6 @@ namespace App\ScheduleCalculation\UseCase\Schedule\Get;
 
 interface TeamEventsRepository
 {
-
     /**
      * @return array
      */

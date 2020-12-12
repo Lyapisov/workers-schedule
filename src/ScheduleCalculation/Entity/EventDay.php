@@ -44,7 +44,6 @@ final class EventDay
         $this->end = $end;
     }
 
-
     /**
      * @return DateTimeImmutable
      */
@@ -68,5 +67,4 @@ final class EventDay
     {
         return $this->end;
     }
-
 }

@@ -11,7 +11,6 @@ use DateTimeImmutable;
  */
 final class WorkingDay
 {
-
     /**
      * Дата рабочего дня
      *

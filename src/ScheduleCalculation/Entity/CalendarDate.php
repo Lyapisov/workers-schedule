@@ -26,53 +26,15 @@ final class CalendarDate
     private bool $isHoliday;
 
     /**
-     * Мероприятие
-     *
-     * @var TeamEvent|null
-     */
-    private ?TeamEvent $teamEvent;
-
-    /**
      * CalendarDate constructor.
      * @param DateTimeImmutable $value
      * @param bool $isHoliday
-     * @param TeamEvent|null $teamEvent
      */
     public function __construct(
         DateTimeImmutable $value,
-        bool $isHoliday,
-        ?TeamEvent $teamEvent = null
+        bool $isHoliday
     ) {
         $this->value = $value;
         $this->isHoliday = $isHoliday;
-        $this->teamEvent = $teamEvent;
     }
-
-    /**
-     * @return DateTimeImmutable
-     */
-    public function getValue(): DateTimeImmutable
-    {
-        return $this->value;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isHoliday(): bool
-    {
-        return $this->isHoliday;
-    }
-
-    /**
-     * @return TeamEvent|null
-     */
-    public function getTeamEvent(): ?TeamEvent
-    {
-        return $this->teamEvent;
-    }
-
-
-
-
 }

@@ -4,46 +4,26 @@ declare(strict_types=1);
 
 namespace App\Tests\Api\Controller\Http\Schedule;
 
+use App\Tests\ControllerTest;
 use App\ScheduleCalculation\Entity\TeamEvent;
 use App\ScheduleCalculation\Entity\Vacation;
-use DateTimeImmutable;
+use App\ScheduleCalculation\Entity\Worker;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use App\ScheduleCalculation\Entity\Worker;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use DateTimeImmutable;
 
 
-final class ScheduleTest extends WebTestCase
+final class ScheduleTest extends ControllerTest
 {
-
 
     const FIRST_WORKER_ID = 'idWorker1';
     const FIRST_VACATION_ID = 'idVacation1';
     const SECOND_VACATION_ID = 'idVacation2';
     const FIRST_TEAM_EVENT_ID = 'idTeamEvent1';
 
-    public EntityManagerInterface $em;
+    protected EntityManagerInterface $em;
     protected KernelBrowser $client;
-
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->client = static::createClient();
-        $this->client->disableReboot();
-        $this->em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
-        $this->em->beginTransaction();
-        $this->em->getConnection()->setAutoCommit(false);
-
-    }
-
-    protected function tearDown(): void
-    {
-        $this->em->getConnection()->rollback();
-        $this->em->close();
-        parent::tearDown();
-    }
 
     public function testSuccessful() {
 
@@ -53,7 +33,7 @@ final class ScheduleTest extends WebTestCase
             $endWork = DateTimeImmutable::createFromFormat('H:i:s', '17:00:00'),
             $startBreak = DateTimeImmutable::createFromFormat('H:i:s', '13:00:00'),
             $endBreak = DateTimeImmutable::createFromFormat('H:i:s', '14:00:00'),
-            [self::FIRST_VACATION_ID]
+            [self::FIRST_VACATION_ID, self::SECOND_VACATION_ID]
         );
 
         $firstVacation = new Vacation(
@@ -137,28 +117,7 @@ final class ScheduleTest extends WebTestCase
         string $startDate,
         string $endDate
     ): string {
-        return '/workers-schedule/?workerId=' . $workerId . '&startDate=' . $startDate . '&endDate=' . $endDate;
+        return '/workers-schedule?workerId=' . $workerId . '&startDate=' . $startDate . '&endDate=' . $endDate;
     }
-
-    protected function saveEntity(object $entity)
-    {
-        $this->em->persist($entity);
-        $this->em->flush();
-        $this->em->clear();
-    }
-
-    /**
-     * Форматирует данные в формате json, делая их более читаемыми.
-     *
-     * @param $content
-     */
-    private function prettifyJson($content): string
-    {
-        return json_encode(
-            json_decode($content),
-            JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
-        );
-    }
-
 
 }

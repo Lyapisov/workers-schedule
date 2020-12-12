@@ -11,7 +11,6 @@ use DateTimeImmutable;
  */
 final class ScheduleReadModel
 {
-
     /**
      * Номер рабочего дня по календарю
      *
@@ -108,7 +107,5 @@ final class ScheduleReadModel
     {
         return $this->endAfterBreak;
     }
-
-
 
 }

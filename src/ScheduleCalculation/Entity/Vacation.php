@@ -102,5 +102,4 @@ class Vacation
     {
         return $this->endDate;
     }
-
 }

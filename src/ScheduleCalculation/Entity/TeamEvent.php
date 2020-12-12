@@ -15,7 +15,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class TeamEvent
 {
-
     /**
      * Идентификатор
      *
@@ -83,6 +82,4 @@ class TeamEvent
     {
         return $this->end;
     }
-
-
 }

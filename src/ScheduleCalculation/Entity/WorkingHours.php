@@ -122,7 +122,4 @@ final class WorkingHours
     {
         $this->endAfterBreak = $endAfterBreak;
     }
-
-
-
 }
