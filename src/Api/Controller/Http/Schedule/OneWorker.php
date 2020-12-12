@@ -36,6 +36,7 @@ final class OneWorker
      *
      * @param Request $request
      * @return JsonResponse
+     * * @throws \Exception
      */
     public function __invoke(Request $request): JsonResponse
     {
@@ -51,12 +52,12 @@ final class OneWorker
                 'day' => $readModel->getDay()->format('Y-m-d'),
                 'timeRanges' => [
                     [
-                        'start' => $readModel->getStartBeforeBreak()->format('H:i:s'),
-                        'end' => $readModel->getEndBeforeBreak()->format('H:i:s')
+                        'start' => $readModel->getStartBeforeBreak()->format('H:i'),
+                        'end' => $readModel->getEndBeforeBreak()->format('H:i')
                     ],
                     [
-                        'start' => $readModel->getStartAfterBreak()->format('H:i:s'),
-                        'end' => $readModel->getEndAfterBreak()->format('H:i:s')
+                        'start' => $readModel->getStartAfterBreak()->format('H:i'),
+                        'end' => $readModel->getEndAfterBreak()->format('H:i')
                     ],
                 ]
             ], $readModel)

@@ -37,4 +37,21 @@ final class CalendarDate
         $this->value = $value;
         $this->isHoliday = $isHoliday;
     }
+
+    /**
+     * @return DateTimeImmutable
+     */
+    public function getValue(): DateTimeImmutable
+    {
+        return $this->value;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHoliday(): bool
+    {
+        return $this->isHoliday;
+    }
+
 }

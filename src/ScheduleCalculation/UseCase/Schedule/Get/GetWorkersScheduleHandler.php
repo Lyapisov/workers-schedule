@@ -14,6 +14,9 @@ use App\ScheduleCalculation\Service\DaysWithStatusService;
 use DateInterval;
 use DatePeriod;
 use DateTimeImmutable;
+use Exception;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Обработчик сценария получения графика работы
@@ -59,7 +62,14 @@ final class GetWorkersScheduleHandler
         $this->daysService = $daysService;
     }
 
-    public function handle(GetWorkersScheduleQuery $query):array {
+    /**
+     * @param GetWorkersScheduleQuery $query
+     * @return ScheduleReadModel[]
+     * @throws Exception
+     */
+    public function handle(GetWorkersScheduleQuery $query): array {
+
+//        $this->validateQuery($query);
 
         $daysWithStatusData = $this->daysService
             ->getForPeriod($query->getStartDate(), $query->getEndDate());
@@ -89,6 +99,48 @@ final class GetWorkersScheduleHandler
         return $readModel;
     }
 
+//    private function validateQuery(GetWorkersScheduleQuery $query): void {
+//
+//        $workerId = $query->getWorkerId();
+//        $startDateString = $query->getStartDate();
+//        $endDateString = $query->getEndDate();
+//
+//        try {
+//            if (empty($workerId) || empty($startDateString) || empty($endDateString)) {
+//                throw new Exception('Введенный запрос не валиден. Введите верные данные!');
+//            }
+//        }
+//        catch (Exception $exception) {
+//           new JsonResponse(
+//                $this->createErrorResponse([$exception->getMessage()]),
+//                Response::HTTP_FORBIDDEN
+//            );
+//           return;
+//        }
+
+//        $startDateObject = new DateTimeImmutable($query->getStartDate());
+//        $endDateObject = new DateTimeImmutable($query->getEndDate());
+//
+//        echo '<pre>';
+//        var_dump($startDateObject->format('Y-m-d'));
+//        echo '</pre>';
+
+//    }
+
+    private function createErrorResponse(array $messages)
+    {
+        return [
+            'error' => [
+                'messages' => $messages,
+                'code' => 1,
+            ],
+        ];
+    }
+
+    /**
+     * @param array $daysWithStatus
+     * @return CalendarDate[]
+     */
     private function getCalendarDates(array $daysWithStatus): array {
 
         $calendarDate = [];
@@ -101,6 +153,11 @@ final class GetWorkersScheduleHandler
         return $calendarDate;
     }
 
+    /**
+     * @param array $vacationData
+     * @return VacationDay[]
+     * @throws \Exception
+     */
     private function getVacationDays(array $vacationData): array {
 
         $vacationDays = [];
@@ -120,6 +177,12 @@ final class GetWorkersScheduleHandler
         return $vacationDays;
     }
 
+    /**
+     * @param array $workerData
+     * @param CalendarDate[] $calendarDates
+     * @param VacationDay[] $vacationDays
+     * @return WorkingDay[]
+     */
     private function getWorkingDays(
         array $workerData,
         array $calendarDates,
@@ -154,13 +217,17 @@ final class GetWorkersScheduleHandler
         return $workingDays;
     }
 
+    /**
+     * @param array $teamEvents
+     * @return EventDay[]
+     */
     private function getEventDays(array $teamEvents): array {
 
         $eventDays = [];
         foreach ($teamEvents as $event) {
 
             $begin = DateTimeImmutable::createFromFormat('Y-m-d', $event["start"]
-                ->format('Y-m-d'));;
+                ->format('Y-m-d'));
             $end = DateTimeImmutable::createFromFormat('Y-m-d', $event["end"]
                 ->format('Y-m-d'))
                 ->modify('+1 day');
@@ -194,6 +261,11 @@ final class GetWorkersScheduleHandler
         return $eventDays;
     }
 
+    /**
+     * @param WorkingDay[] $workingDays
+     * @param EventDay[] $eventDays
+     * @throws Exception
+     */
     private function correctWorkingDays(array $workingDays, array $eventDays): void {
 
         foreach ($workingDays as $workDay) {
