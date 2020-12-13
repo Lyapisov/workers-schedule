@@ -60,6 +60,7 @@ final class OneWorker
                         ]
                     ]
                 ];
+                continue;
             }
 
             $content[] = [
@@ -81,9 +82,14 @@ final class OneWorker
             ];
         }
 
+//            echo '<pre>';
+//            echo '</pre>';
+
         $responseContent = [
-            'holidaySchedule' => $content
+            'holidaySchedule' => array_values($content),
         ];
+
+//        var_dump(json_encode($responseContent));
 
         return new JsonResponse($responseContent, Response::HTTP_OK);
     }

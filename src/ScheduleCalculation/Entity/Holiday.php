@@ -9,7 +9,7 @@ use DateTimeImmutable;
 /**
  * Выходной день
  */
-final class HolidayDay
+final class Holiday
 {
     /**
      * Дата выходного дня
@@ -44,8 +44,8 @@ final class HolidayDay
     public static function ifFullDayHoliday(
         DateTimeImmutable $date,
         bool $isFullHoliday
-    ): HolidayDay {
-        $holidayDay = new HolidayDay();
+    ): Holiday {
+        $holidayDay = new Holiday();
         $holidayDay->date = $date;
         $holidayDay->isFullHoliday = $isFullHoliday;
         return $holidayDay;
@@ -56,9 +56,9 @@ final class HolidayDay
         HolidayHours $holidayHours,
         Breakfast $breakfast,
         bool $isFullHoliday
-    ): HolidayDay {
+    ): Holiday {
 
-        $holidayDay = new HolidayDay();
+        $holidayDay = new Holiday();
         $holidayDay->date = $date;
         $holidayDay->holidayHours = $holidayHours;
         $holidayDay->breakfast = $breakfast;

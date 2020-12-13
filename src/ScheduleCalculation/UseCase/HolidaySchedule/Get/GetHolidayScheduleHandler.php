@@ -7,7 +7,7 @@ namespace App\ScheduleCalculation\UseCase\HolidaySchedule\Get;
 use App\ScheduleCalculation\Entity\Breakfast;
 use App\ScheduleCalculation\Entity\CalendarDate;
 use App\ScheduleCalculation\Entity\EventDay;
-use App\ScheduleCalculation\Entity\HolidayDay;
+use App\ScheduleCalculation\Entity\Holiday;
 use App\ScheduleCalculation\Entity\HolidayHours;
 use App\ScheduleCalculation\Entity\VacationDay;
 use App\ScheduleCalculation\Service\DaysWithStatusService;
@@ -94,11 +94,8 @@ final class GetHolidayScheduleHandler
                     new DateTimeImmutable('00:00:00'),
                     new DateTimeImmutable('23:59:59')
                 );
+                continue;
             }
-
-//            echo '<pre>';
-//            var_dump($day);
-//            echo '</pre>';
 
             $readModel[] = HolidayScheduleReadModel::ifPartHoliday(
                 $day->getDate(),
@@ -202,7 +199,7 @@ final class GetHolidayScheduleHandler
      * @param array $workerData
      * @param CalendarDate[] $calendarDates
      * @param VacationDay[] $vacationDays
-     * @return HolidayDay[]
+     * @return Holiday[]
      */
     private function getHolidayDays(
         array $workerData,
@@ -216,7 +213,7 @@ final class GetHolidayScheduleHandler
             foreach ($vacationDays as $vacationDay) {
 
                 if ($date->isHoliday()) {
-                    $holidayDays[] = HolidayDay::ifFullDayHoliday(
+                    $holidayDays[] = Holiday::ifFullDayHoliday(
                         $date->getValue(),
                         $isFullHoliday = true
                     );
@@ -225,7 +222,7 @@ final class GetHolidayScheduleHandler
 
                 if ($date->getValue() == $vacationDay->getDate()) {
 
-                    $holidayDays[] = HolidayDay::ifFullDayHoliday(
+                    $holidayDays[] = Holiday::ifFullDayHoliday(
                         $date->getValue(),
                         $isFullHoliday = true
                     );
@@ -235,7 +232,7 @@ final class GetHolidayScheduleHandler
                 $countVacationDay++;
                 if($countVacationDay == count($vacationDays)) {
 
-                    $holidayDays[] = HolidayDay::ifPartDayHoliday(
+                    $holidayDays[] = Holiday::ifPartDayHoliday(
                         $date->getValue(),
                         new HolidayHours(
                             new DateTimeImmutable('00:00:00'),
@@ -256,7 +253,7 @@ final class GetHolidayScheduleHandler
     }
 
     /**
-     * @param HolidayDay[] $holidayDays
+     * @param Holiday[] $holidayDays
      * @param EventDay[] $eventDays
      */
     private function correctHoliday(array $holidayDays, array $eventDays) {
@@ -278,13 +275,13 @@ final class GetHolidayScheduleHandler
                 $endBreak = new DateTimeImmutable($holidayDay->getBreakfast()->getEnd()->format('H:i:s'));
 
                 //TODO Добавить проверки для большей гибкости при различном времени начала и окончания мероприятий
-                if ($holidayDayWithoutHours == $eventDayWithoutHours) {
+                if ( $holidayDayWithoutHours == $eventDayWithoutHours ) {
 
                     if ($startEventDay > $endBeforeWorking && $startEventDay < $startBreak) {
                         $holidayDay->getHolidayHours()->setStartAfterWorking($startEventDay);
                     }
 
-                    if ($startEventDay < $startAfterWorking && $startEventDay > $startBreak) {
+                    if ($startEventDay < $startAfterWorking && $startEventDay > $endBreak) {
                         $holidayDay->getHolidayHours()->setStartAfterWorking($startEventDay);
                     }
 
