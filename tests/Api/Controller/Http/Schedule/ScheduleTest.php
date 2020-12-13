@@ -483,32 +483,6 @@ final class ScheduleTest extends ControllerTest
         );
     }
 
-    public function testIfNotGetMethod() {
-        $this->client->request(
-            'POST',
-            self::formUrl(self::FIRST_WORKER_ID, '20201212', '20201213')
-        );
-
-        $expectedResponseContent =
-            [
-                'error' => [
-                    'messages' => 'Неверный метод!',
-                ],
-            ];
-
-        $response = $this->client->getResponse();
-        $responseContent = $response->getContent();
-
-        $expectedResponseContent = trim(json_encode($expectedResponseContent));
-
-        $this->assertEquals($expectedResponseContent, $responseContent);
-
-        $this->assertEquals(
-            Response::HTTP_BAD_REQUEST,
-            $response->getStatusCode()
-        );
-    }
-
     private static function formUrl(
         string $workerId,
         string $startDate,

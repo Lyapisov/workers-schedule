@@ -72,15 +72,17 @@ final class GetWorkersScheduleHandler
         $calendarDates = $this->calendarDatesService
             ->getForPeriod($query->getStartDate(), $query->getEndDate());
 
-        $vacationData = $this->vocationRepository->findByWorkerId($query->getWorkerId());
-        $vacationDays = $this->getVacationDays($vacationData);
+        $vacationDays = $this->vocationRepository
+            ->findByWorkerId($query->getWorkerId());
 
-        $workerData = $this->workerRepository->find($query->getWorkerId());
+        $workerData = $this->workerRepository
+            ->find($query->getWorkerId());
+
         if (empty($workerData)) throw new InvalidUrlException('Нет такого работника!');
+
         $workingDays = $this->getWorkingDays($workerData, $calendarDates, $vacationDays);
 
-        $teamEventsData = $this->teamEventsRepository->findAll();
-        $eventDays = $this->getEventDays($teamEventsData);
+        $eventDays = $this->teamEventsRepository->findAll();
 
         $this->correctWorkingDays($workingDays, $eventDays);
 
@@ -95,30 +97,6 @@ final class GetWorkersScheduleHandler
             );
         }
         return $readModel;
-    }
-
-    /**
-     * @param array $vacationData
-     * @return VacationDay[]
-     * @throws \Exception
-     */
-    private function getVacationDays(array $vacationData): array {
-
-        $vacationDays = [];
-        foreach ($vacationData as $vacation){
-
-            $begin = new DateTimeImmutable($vacation["startDate"]->format("Y-m-d"));
-            $end = new DateTimeImmutable($vacation["endDate"]->format("Y-m-d"));
-            $end = $end->modify('+1 day');
-
-            $interval = DateInterval::createFromDateString('1 day');
-            $period = new DatePeriod($begin, $interval, $end);
-
-            foreach ($period as $date) {
-                $vacationDays[] = new VacationDay($date);
-            }
-        }
-        return $vacationDays;
     }
 
     /**
@@ -159,50 +137,6 @@ final class GetWorkersScheduleHandler
             }
         }
         return $workingDays;
-    }
-
-    /**
-     * @param array $teamEvents
-     * @return EventDay[]
-     */
-    private function getEventDays(array $teamEvents): array {
-
-        $eventDays = [];
-        foreach ($teamEvents as $event) {
-
-            $begin = DateTimeImmutable::createFromFormat('Y-m-d', $event["start"]
-                ->format('Y-m-d'));
-            $end = DateTimeImmutable::createFromFormat('Y-m-d', $event["end"]
-                ->format('Y-m-d'))
-                ->modify('+1 day');
-
-            $interval = DateInterval::createFromDateString('1 day');
-            $period = new DatePeriod($begin, $interval, $end);
-
-            $amountDays = iterator_count($period);
-            for ($i = 1; $i <= $amountDays; $i++) {
-
-                $date = $period->getStartDate();
-                $start = $event["start"];
-                $end = $event["end"];
-
-                if ($i != 1) {
-                    $date = $date->modify('+' . $i-1 . ' day');
-                    $start = DateTimeImmutable::createFromFormat('H:i:s', '00:00:00');
-                }
-                if ($amountDays > 1) {
-                    $end = DateTimeImmutable::createFromFormat('H:i:s', '23:59:59');
-                }
-                if ($i == $amountDays) $end = $event["end"];
-
-                $eventDays[] = new EventDay(
-                    $date,
-                    $start,
-                    $end
-                );
-            }
-        }
-        return $eventDays;
     }
 
     /**

@@ -5,7 +5,11 @@ declare(strict_types=1);
 namespace App\ScheduleCalculation\Repository;
 
 use App\ScheduleCalculation\Entity\Vacation;
+use App\ScheduleCalculation\UseCase\ReadModel\VacationDay;
 use App\ScheduleCalculation\UseCase\ReadModel\VacationRepository;
+use DateInterval;
+use DatePeriod;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
 class DoctrineVacationRepository implements VacationRepository
@@ -25,8 +29,39 @@ class DoctrineVacationRepository implements VacationRepository
         $this->em = $em;
     }
 
+    /**
+     * @param string $workerId
+     * @return VacationDay[]
+     * @throws \Exception
+     */
     public function findByWorkerId(string $workerId): array
     {
+
+        $vacationData = $this->getVacationByWorker($workerId);
+
+        $vacationDays = [];
+        foreach ($vacationData as $vacation){
+
+            $begin = new DateTimeImmutable($vacation["startDate"]->format("Y-m-d"));
+            $end = new DateTimeImmutable($vacation["endDate"]->format("Y-m-d"));
+            $end = $end->modify('+1 day');
+
+            $interval = DateInterval::createFromDateString('1 day');
+            $period = new DatePeriod($begin, $interval, $end);
+
+            foreach ($period as $date) {
+                $vacationDays[] = new VacationDay($date);
+            }
+        }
+        return $vacationDays;
+
+    }
+
+    /**
+     * @param string $workerId
+     * @return array
+     */
+    private function getVacationByWorker(string $workerId): array {
         $queryBuilder = $this
             ->em
             ->createQueryBuilder()

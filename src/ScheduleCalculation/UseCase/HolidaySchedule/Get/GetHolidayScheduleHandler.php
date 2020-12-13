@@ -4,17 +4,14 @@ declare(strict_types=1);
 
 namespace App\ScheduleCalculation\UseCase\HolidaySchedule\Get;
 
+use App\ScheduleCalculation\Service\CalendarDates\CalendarDate;
 use App\ScheduleCalculation\UseCase\ReadModel\Breakfast;
 use App\ScheduleCalculation\UseCase\ReadModel\EventDay;
-use App\ScheduleCalculation\UseCase\HolidaySchedule\Get\HolidayPeriod;
-use App\ScheduleCalculation\UseCase\HolidaySchedule\Get\HolidayHours;
 use App\ScheduleCalculation\UseCase\ReadModel\VacationDay;
 use App\ScheduleCalculation\Service\CalendarDates\CalendarDatesService;
 use App\ScheduleCalculation\UseCase\ReadModel\TeamEventsRepository;
 use App\ScheduleCalculation\UseCase\ReadModel\VacationRepository;
 use App\ScheduleCalculation\UseCase\ReadModel\WorkerRepository;
-use DateInterval;
-use DatePeriod;
 use DateTimeImmutable;
 
 /**
@@ -71,17 +68,15 @@ final class GetHolidayScheduleHandler
         $calendarDates = $this->calendarDatesService
             ->getForPeriod($query->getStartDate(), $query->getEndDate());
 
-        $vacationData = $this->vocationRepository->findByWorkerId($query->getWorkerId());
-        $vacationDays = $this->getVacationDays($vacationData);
+        $vacationDays = $this->vocationRepository->findByWorkerId($query->getWorkerId());
 
         $workerData = $this->workerRepository->find($query->getWorkerId());
+
         $holidayDays = $this->getHolidayDays($workerData, $calendarDates, $vacationDays);
 
-        $teamEventsData = $this->teamEventsRepository->findAll();
-        $eventDays = $this->getEventDays($teamEventsData);
+        $eventDays = $this->teamEventsRepository->findAll();
 
         $this->correctHoliday($holidayDays, $eventDays);
-
 
         $readModel = [];
         foreach ($holidayDays as $day) {
@@ -108,91 +103,6 @@ final class GetHolidayScheduleHandler
     }
 
     /**
-     * @param array $daysWithStatus
-     * @return CalendarDate[]
-     */
-    private function getCalendarDates(array $daysWithStatus): array {
-
-        $calendarDate = [];
-        foreach ($daysWithStatus as $day => $isHoliday) {
-            $calendarDate[] = new CalendarDate(
-                DateTimeImmutable::createFromFormat("Y-m-d H:i:s", $day . ' 00:00:00'),
-                (bool)$isHoliday
-            );
-        }
-        return $calendarDate;
-    }
-
-    /**
-     * @param array $vacationData
-     * @return VacationDay[]
-     * @throws \Exception
-     */
-    private function getVacationDays(array $vacationData): array {
-
-        $vacationDays = [];
-        foreach ($vacationData as $vacation){
-
-            $begin = new DateTimeImmutable($vacation["startDate"]->format("Y-m-d"));
-            $end = new DateTimeImmutable($vacation["endDate"]->format("Y-m-d"));
-            $end = $end->modify('+1 day');
-
-            $interval = DateInterval::createFromDateString('1 day');
-            $period = new DatePeriod($begin, $interval, $end);
-
-            foreach ($period as $date) {
-                $vacationDays[] = new VacationDay($date);
-            }
-        }
-        return $vacationDays;
-    }
-
-    /**
-     * @param array $teamEvents
-     * @return EventDay[]
-     */
-    private function getEventDays(array $teamEvents): array {
-
-        $eventDays = [];
-        foreach ($teamEvents as $event) {
-
-            $begin = DateTimeImmutable::createFromFormat('Y-m-d', $event["start"]
-                ->format('Y-m-d'));;
-            $end = DateTimeImmutable::createFromFormat('Y-m-d', $event["end"]
-                ->format('Y-m-d'))
-                ->modify('+1 day');
-
-            $interval = DateInterval::createFromDateString('1 day');
-            $period = new DatePeriod($begin, $interval, $end);
-
-            $amountDays = iterator_count($period);
-            for ($i = 1; $i <= $amountDays; $i++) {
-
-                $date = $period->getStartDate();
-                $start = $event["start"];
-                $end = $event["end"];
-
-                if ($i != 1) {
-                    $date = $date->modify('+' . $i-1 . ' day');
-                    $start = DateTimeImmutable::createFromFormat('H:i:s', '00:00:00');
-                }
-                if ($amountDays > 1) {
-                    $end = DateTimeImmutable::createFromFormat('H:i:s', '23:59:59');
-                }
-                if ($i == $amountDays) $end = $event["end"];
-
-                $eventDays[] = new EventDay(
-                    $date,
-                    $start,
-                    $end
-                );
-            }
-        }
-        return $eventDays;
-    }
-
-
-    /**
      * @param array $workerData
      * @param CalendarDate[] $calendarDates
      * @param VacationDay[] $vacationDays
@@ -210,7 +120,7 @@ final class GetHolidayScheduleHandler
             foreach ($vacationDays as $vacationDay) {
 
                 if ($date->isHoliday()) {
-                    $holidayDays[] = HolidayPeriod::ifFullDayHoliday(
+                    $holidayDays[] = HolidayPeriod::ifFullHoliday(
                         $date->getValue(),
                         $isFullHoliday = true
                     );
@@ -219,7 +129,7 @@ final class GetHolidayScheduleHandler
 
                 if ($date->getValue() == $vacationDay->getDate()) {
 
-                    $holidayDays[] = HolidayPeriod::ifFullDayHoliday(
+                    $holidayDays[] = HolidayPeriod::ifFullHoliday(
                         $date->getValue(),
                         $isFullHoliday = true
                     );
@@ -229,7 +139,7 @@ final class GetHolidayScheduleHandler
                 $countVacationDay++;
                 if($countVacationDay == count($vacationDays)) {
 
-                    $holidayDays[] = HolidayPeriod::ifPartDayHoliday(
+                    $holidayDays[] = HolidayPeriod::ifPartHoliday(
                         $date->getValue(),
                         new HolidayHours(
                             new DateTimeImmutable('00:00:00'),

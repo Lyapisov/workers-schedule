@@ -9,33 +9,33 @@ use App\ScheduleCalculation\UseCase\ReadModel\Breakfast;
 use DateTimeImmutable;
 
 /**
- * Выходной день
+ * Выходной период дня
  */
 final class HolidayPeriod
 {
     /**
-     * Дата выходного дня
+     * Дата выходного периода
      *
      * @var DateTimeImmutable
      */
     private DateTimeImmutable $date;
 
     /**
-     * Выходные часы
+     * Часы периода
      *
      * @var HolidayHours
      */
     private HolidayHours $holidayHours;
 
     /**
-     * Обед
+     * Период обеда
      *
      * @var Breakfast
      */
     private Breakfast $breakfast;
 
     /**
-     * Если в выходном дне есть рабочее время
+     * Если выходной период весь день
      *
      * @var bool
      */
@@ -43,7 +43,7 @@ final class HolidayPeriod
 
     private function __construct(){}
 
-    public static function ifFullDayHoliday(
+    public static function ifFullHoliday(
         DateTimeImmutable $date,
         bool $isFullHoliday
     ): HolidayPeriod {
@@ -53,7 +53,7 @@ final class HolidayPeriod
         return $holidayDay;
     }
 
-    public static function ifPartDayHoliday(
+    public static function ifPartHoliday(
         DateTimeImmutable $date,
         HolidayHours $holidayHours,
         Breakfast $breakfast,
