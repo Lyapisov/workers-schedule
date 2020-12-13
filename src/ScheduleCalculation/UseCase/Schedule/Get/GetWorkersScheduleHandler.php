@@ -8,8 +8,6 @@ use App\ScheduleCalculation\UseCase\ReadModel\Breakfast;
 use App\ScheduleCalculation\Service\CalendarDates\CalendarDate;
 use App\ScheduleCalculation\UseCase\ReadModel\EventDay;
 use App\ScheduleCalculation\UseCase\ReadModel\VacationDay;
-use App\ScheduleCalculation\UseCase\Schedule\Get\WorkingDay;
-use App\ScheduleCalculation\UseCase\Schedule\Get\WorkingHours;
 use App\ScheduleCalculation\Service\CalendarDates\CalendarDatesService;
 use App\ScheduleCalculation\UseCase\ReadModel\TeamEventsRepository;
 use App\ScheduleCalculation\UseCase\ReadModel\VacationRepository;
@@ -18,6 +16,7 @@ use DateInterval;
 use DatePeriod;
 use DateTimeImmutable;
 use Exception;
+use PharIo\Manifest\InvalidUrlException;
 
 /**
  * Обработчик сценария получения графика работы
@@ -77,6 +76,7 @@ final class GetWorkersScheduleHandler
         $vacationDays = $this->getVacationDays($vacationData);
 
         $workerData = $this->workerRepository->find($query->getWorkerId());
+        if (empty($workerData)) throw new InvalidUrlException('Нет такого работника!');
         $workingDays = $this->getWorkingDays($workerData, $calendarDates, $vacationDays);
 
         $teamEventsData = $this->teamEventsRepository->findAll();
@@ -96,16 +96,6 @@ final class GetWorkersScheduleHandler
         }
         return $readModel;
     }
-
-//    private function createErrorResponse(array $messages)
-//    {
-//        return [
-//            'error' => [
-//                'messages' => $messages,
-//                'code' => 1,
-//            ],
-//        ];
-//    }
 
     /**
      * @param array $vacationData

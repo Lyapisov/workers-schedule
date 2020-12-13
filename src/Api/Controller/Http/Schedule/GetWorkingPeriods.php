@@ -7,6 +7,8 @@ namespace App\Api\Controller\Http\Schedule;
 use App\ScheduleCalculation\UseCase\Schedule\Get\GetWorkersScheduleHandler;
 use App\ScheduleCalculation\UseCase\Schedule\Get\GetWorkersScheduleQuery;
 use App\ScheduleCalculation\UseCase\Schedule\Get\ScheduleReadModel;
+use PharIo\Manifest\InvalidUrlException;
+use PHPUnit\Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -36,34 +38,55 @@ final class GetWorkingPeriods
      *
      * @param Request $request
      * @return JsonResponse
-     * * @throws \Exception
+     * @throws \Exception
      */
     public function __invoke(Request $request): JsonResponse
     {
 
-        $readModel = $this->getWorkersScheduleHandler->handle(new GetWorkersScheduleQuery(
-            $request->get('workerId', ''),
-            $request->get('startDate', ''),
-            $request->get('endDate', '')
-        ));
+        try {
 
-        $responseContent = [
-            'schedule' => array_map(fn(ScheduleReadModel $readModel) => [
-                'day' => $readModel->getDay()->format('Y-m-d'),
-                'timeRanges' => [
-                    [
-                        'start' => $readModel->getStartBeforeBreak()->format('H:i'),
-                        'end' => $readModel->getEndBeforeBreak()->format('H:i')
-                    ],
-                    [
-                        'start' => $readModel->getStartAfterBreak()->format('H:i'),
-                        'end' => $readModel->getEndAfterBreak()->format('H:i')
-                    ],
-                ]
-            ], $readModel)
-        ];
+            $workerId = $request->get('workerId', '');
+            $startDate = $request->get('startDate', '');
+            $endDate = $request->get('endDate', '');
 
-        return new JsonResponse($responseContent, JsonResponse::HTTP_OK);
+            if (empty($workerId) || empty($startDate) || empty($endDate)) {
+                throw new InvalidUrlException('Введены не все данные!');
+            }
+
+            $readModel = $this->getWorkersScheduleHandler->handle(new GetWorkersScheduleQuery(
+                $workerId,
+                $startDate,
+                $endDate
+            ));
+
+            $responseContent = [
+                'schedule' => array_map(fn(ScheduleReadModel $readModel) => [
+                    'day' => $readModel->getDay()->format('Y-m-d'),
+                    'timeRanges' => [
+                        [
+                            'start' => $readModel->getStartBeforeBreak()->format('H:i'),
+                            'end' => $readModel->getEndBeforeBreak()->format('H:i')
+                        ],
+                        [
+                            'start' => $readModel->getStartAfterBreak()->format('H:i'),
+                            'end' => $readModel->getEndAfterBreak()->format('H:i')
+                        ],
+                    ]
+                ], $readModel)
+            ];
+
+            return new JsonResponse($responseContent, JsonResponse::HTTP_OK);
+
+        } catch (InvalidUrlException $exception){
+
+            $error = [
+                'error' => [
+                    'messages' => $exception->getMessage(),
+                ],
+            ];
+
+            return new JsonResponse($error,JsonResponse::HTTP_BAD_REQUEST );
+        }
     }
 
 }

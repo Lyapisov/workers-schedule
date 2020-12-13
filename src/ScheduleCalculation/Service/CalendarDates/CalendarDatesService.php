@@ -56,8 +56,10 @@ final class CalendarDatesService
             . $startDate . '&date2=' . $endDate
             . '&pre=0&delimeter=%3B&covid=0'
         );
+
         $resultApi = $response->getContent();
         $resultApi = explode(";", $resultApi);
+
         return $resultApi;
     }
 

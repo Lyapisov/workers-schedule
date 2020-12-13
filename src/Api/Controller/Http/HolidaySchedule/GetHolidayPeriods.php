@@ -82,14 +82,9 @@ final class GetHolidayPeriods
             ];
         }
 
-//            echo '<pre>';
-//            echo '</pre>';
-
         $responseContent = [
             'holidaySchedule' => array_values($content),
         ];
-
-//        var_dump(json_encode($responseContent));
 
         return new JsonResponse($responseContent, Response::HTTP_OK);
     }

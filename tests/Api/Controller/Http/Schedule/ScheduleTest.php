@@ -121,15 +121,8 @@ final class ScheduleTest extends ControllerTest
             $end = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2020-02-14 23:59:59')
         );
 
-        $firstTeamEvent = new TeamEvent(
-            $id = self::FIRST_TEAM_EVENT_ID,
-            $start = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2020-01-10 15:00:00'),
-            $end = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2020-01-11 00:00:00')
-        );
-
         $this->saveEntity($firstWorker);
         $this->saveEntity($firstVacation);
-        $this->saveEntity($firstTeamEvent);
 
         $this->client->request(
             'GET',
@@ -436,71 +429,85 @@ final class ScheduleTest extends ControllerTest
         );
     }
 
-//    public function testNot() {
-//
-//        $firstWorker = new Worker(
-//            $id = self::FIRST_WORKER_ID,
-//            $startWork = DateTimeImmutable::createFromFormat('H:i:s', '09:00:00'),
-//            $endWork = DateTimeImmutable::createFromFormat('H:i:s', '18:00:00'),
-//            $startBreak = DateTimeImmutable::createFromFormat('H:i:s', '14:00:00'),
-//            $endBreak = DateTimeImmutable::createFromFormat('H:i:s', '15:00:00'),
-//            [self::FIRST_VACATION_ID, self::SECOND_VACATION_ID]
-//        );
-//
-//        $firstVacation = new Vacation(
-//            $id = self::FIRST_VACATION_ID,
-//            $workerId = self::FIRST_WORKER_ID,
-//            $start = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2020-10-01 00:00:00'),
-//            $end = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2020-10-15 23:59:59')
-//        );
-//
-//        $secondVacation = new Vacation(
-//            $id = self::SECOND_VACATION_ID,
-//            $workerId = self::FIRST_WORKER_ID,
-//            $start = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2020-10-17 00:00:00'),
-//            $end = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2020-10-31 23:59:59')
-//        );
-//
-//        $firstTeamEvent = new TeamEvent(
-//            $id = self::FIRST_TEAM_EVENT_ID,
-//            $start = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2020-01-09 15:00:00'),
-//            $end = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2020-01-09 18:00:00')
-//        );
-//
-//        $this->saveEntity($firstWorker);
-//        $this->saveEntity($firstVacation);
-//        $this->saveEntity($secondVacation);
-//        $this->saveEntity($firstTeamEvent);
-//
-//        $this->client->request(
-//            'GET',
-//            self::formUrl(self::FIRST_WORKER_ID, '', '20201102')
-//        );
-//
-//        $expectedResponseContent =
-//            [
-//                'error' => [
-//                    'messages' => [
-//                        'Введенный запрос не валиден. Введите верные данные!',
-//                    ],
-//                    'code' => 1,
-//                ],
-//            ];
-//
-//        $response = $this->client->getResponse();
-//        $responseContent = $response->getContent();
-//
-//        $expectedResponseContent = trim(json_encode($expectedResponseContent));
-//
-//        $this->assertEquals($expectedResponseContent, $responseContent);
-//
-//        $this->assertEquals(
-//            Response::HTTP_BAD_REQUEST,
-//            $response->getStatusCode()
-//        );
-//    }
+    public function testIfEmptyQuery() {
 
+        $this->client->request(
+            'GET',
+            self::formUrl(self::FIRST_WORKER_ID, '', '')
+        );
 
+        $expectedResponseContent =
+            [
+                'error' => [
+                    'messages' => 'Введены не все данные!',
+                ],
+            ];
+
+        $response = $this->client->getResponse();
+        $responseContent = $response->getContent();
+
+        $expectedResponseContent = trim(json_encode($expectedResponseContent));
+
+        $this->assertEquals($expectedResponseContent, $responseContent);
+
+        $this->assertEquals(
+            Response::HTTP_BAD_REQUEST,
+            $response->getStatusCode()
+        );
+    }
+
+    public function testIfNotWorker() {
+
+        $this->client->request(
+            'GET',
+            self::formUrl(self::FIRST_WORKER_ID, '20201212', '20201213')
+        );
+
+        $expectedResponseContent =
+            [
+                'error' => [
+                    'messages' => 'Нет такого работника!',
+                ],
+            ];
+
+        $response = $this->client->getResponse();
+        $responseContent = $response->getContent();
+
+        $expectedResponseContent = trim(json_encode($expectedResponseContent));
+
+        $this->assertEquals($expectedResponseContent, $responseContent);
+
+        $this->assertEquals(
+            Response::HTTP_BAD_REQUEST,
+            $response->getStatusCode()
+        );
+    }
+
+    public function testIfNotGetMethod() {
+        $this->client->request(
+            'POST',
+            self::formUrl(self::FIRST_WORKER_ID, '20201212', '20201213')
+        );
+
+        $expectedResponseContent =
+            [
+                'error' => [
+                    'messages' => 'Неверный метод!',
+                ],
+            ];
+
+        $response = $this->client->getResponse();
+        $responseContent = $response->getContent();
+
+        $expectedResponseContent = trim(json_encode($expectedResponseContent));
+
+        $this->assertEquals($expectedResponseContent, $responseContent);
+
+        $this->assertEquals(
+            Response::HTTP_BAD_REQUEST,
+            $response->getStatusCode()
+        );
+    }
 
     private static function formUrl(
         string $workerId,
