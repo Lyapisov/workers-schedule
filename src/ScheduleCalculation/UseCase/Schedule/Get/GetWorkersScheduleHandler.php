@@ -4,19 +4,20 @@ declare(strict_types=1);
 
 namespace App\ScheduleCalculation\UseCase\Schedule\Get;
 
-use App\ScheduleCalculation\Entity\Breakfast;
-use App\ScheduleCalculation\Entity\CalendarDate;
-use App\ScheduleCalculation\Entity\EventDay;
-use App\ScheduleCalculation\Entity\VacationDay;
-use App\ScheduleCalculation\Entity\WorkingDay;
-use App\ScheduleCalculation\Entity\WorkingHours;
-use App\ScheduleCalculation\Service\DaysWithStatusService;
+use App\ScheduleCalculation\UseCase\ReadModel\Breakfast;
+use App\ScheduleCalculation\Service\CalendarDates\CalendarDate;
+use App\ScheduleCalculation\UseCase\ReadModel\EventDay;
+use App\ScheduleCalculation\UseCase\ReadModel\VacationDay;
+use App\ScheduleCalculation\UseCase\Schedule\Get\WorkingDay;
+use App\ScheduleCalculation\UseCase\Schedule\Get\WorkingHours;
+use App\ScheduleCalculation\Service\CalendarDates\CalendarDatesService;
+use App\ScheduleCalculation\UseCase\ReadModel\TeamEventsRepository;
+use App\ScheduleCalculation\UseCase\ReadModel\VacationRepository;
+use App\ScheduleCalculation\UseCase\ReadModel\WorkerRepository;
 use DateInterval;
 use DatePeriod;
 use DateTimeImmutable;
 use Exception;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Обработчик сценария получения графика работы
@@ -39,27 +40,27 @@ final class GetWorkersScheduleHandler
     private TeamEventsRepository $teamEventsRepository;
 
     /**
-     * @var DaysWithStatusService
+     * @var CalendarDatesService
      */
-    private DaysWithStatusService $daysService;
+    private CalendarDatesService $calendarDatesService;
 
     /**
      * GetWorkersScheduleHandler constructor.
      * @param WorkerRepository $workerRepository
      * @param VacationRepository $vocationRepository
      * @param TeamEventsRepository $teamEventsRepository
-     * @param DaysWithStatusService $daysService
+     * @param CalendarDatesService $calendarDatesService
      */
     public function __construct(
         WorkerRepository $workerRepository,
         VacationRepository $vocationRepository,
         TeamEventsRepository $teamEventsRepository,
-        DaysWithStatusService $daysService
+        CalendarDatesService $calendarDatesService
     ) {
         $this->workerRepository = $workerRepository;
         $this->vocationRepository = $vocationRepository;
         $this->teamEventsRepository = $teamEventsRepository;
-        $this->daysService = $daysService;
+        $this->calendarDatesService = $calendarDatesService;
     }
 
     /**
@@ -69,11 +70,8 @@ final class GetWorkersScheduleHandler
      */
     public function handle(GetWorkersScheduleQuery $query): array {
 
-//        $this->validateQuery($query);
-
-        $daysWithStatusData = $this->daysService
+        $calendarDates = $this->calendarDatesService
             ->getForPeriod($query->getStartDate(), $query->getEndDate());
-        $calendarDates = $this->getCalendarDates($daysWithStatusData);
 
         $vacationData = $this->vocationRepository->findByWorkerId($query->getWorkerId());
         $vacationDays = $this->getVacationDays($vacationData);
@@ -99,59 +97,15 @@ final class GetWorkersScheduleHandler
         return $readModel;
     }
 
-//    private function validateQuery(GetWorkersScheduleQuery $query): void {
-//
-//        $workerId = $query->getWorkerId();
-//        $startDateString = $query->getStartDate();
-//        $endDateString = $query->getEndDate();
-//
-//        try {
-//            if (empty($workerId) || empty($startDateString) || empty($endDateString)) {
-//                throw new Exception('Введенный запрос не валиден. Введите верные данные!');
-//            }
-//        }
-//        catch (Exception $exception) {
-//           new JsonResponse(
-//                $this->createErrorResponse([$exception->getMessage()]),
-//                Response::HTTP_FORBIDDEN
-//            );
-//           return;
-//        }
-
-//        $startDateObject = new DateTimeImmutable($query->getStartDate());
-//        $endDateObject = new DateTimeImmutable($query->getEndDate());
-//
-//        echo '<pre>';
-//        var_dump($startDateObject->format('Y-m-d'));
-//        echo '</pre>';
-
+//    private function createErrorResponse(array $messages)
+//    {
+//        return [
+//            'error' => [
+//                'messages' => $messages,
+//                'code' => 1,
+//            ],
+//        ];
 //    }
-
-    private function createErrorResponse(array $messages)
-    {
-        return [
-            'error' => [
-                'messages' => $messages,
-                'code' => 1,
-            ],
-        ];
-    }
-
-    /**
-     * @param array $daysWithStatus
-     * @return CalendarDate[]
-     */
-    private function getCalendarDates(array $daysWithStatus): array {
-
-        $calendarDate = [];
-        foreach ($daysWithStatus as $day => $isHoliday) {
-            $calendarDate[] = new CalendarDate(
-                DateTimeImmutable::createFromFormat("Y-m-d H:i:s", $day . ' 00:00:00'),
-                (bool)$isHoliday
-            );
-        }
-        return $calendarDate;
-    }
 
     /**
      * @param array $vacationData

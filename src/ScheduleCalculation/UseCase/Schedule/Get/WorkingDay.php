@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\ScheduleCalculation\Entity;
+namespace App\ScheduleCalculation\UseCase\Schedule\Get;
 
+use App\ScheduleCalculation\UseCase\Schedule\Get\WorkingHours;
+use App\ScheduleCalculation\UseCase\ReadModel\Breakfast;
 use DateTimeImmutable;
 
 /**

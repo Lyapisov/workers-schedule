@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\ScheduleCalculation\Entity;
+namespace App\ScheduleCalculation\Service\CalendarDates;
 
 use DateTimeImmutable;
 

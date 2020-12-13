@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\ScheduleCalculation\Repository;
 
 use App\ScheduleCalculation\Entity\TeamEvent;
-use App\ScheduleCalculation\UseCase\Schedule\Get\TeamEventsRepository;
+use App\ScheduleCalculation\UseCase\ReadModel\TeamEventsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 final class DoctrineTeamEventsRepository implements TeamEventsRepository

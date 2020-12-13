@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\ScheduleCalculation\Service;
+namespace App\ScheduleCalculation\Service\CalendarDates;
 
 use DateInterval;
 use DatePeriod;
@@ -12,7 +12,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 /**
  * Сервис для получения списка дат с статусами о рабочем или нерабочем дне
  */
-final class DaysWithStatusService
+final class CalendarDatesService
 {
     /**
      * @var HttpClientInterface
@@ -28,6 +28,11 @@ final class DaysWithStatusService
         $this->client = $client;
     }
 
+    /**
+     * @param string $startDate
+     * @param string $endDate
+     * @return CalendarDate[]
+     */
     public function getForPeriod(
         string $startDate,
         string $endDate
@@ -37,9 +42,10 @@ final class DaysWithStatusService
         $allDaysStatus = $this->getAllDaysStatusByApi($startDate, $endDate);
 
         $daysWithStatus = array_combine($allDays, $allDaysStatus);
-//        $holidayDays = $this->getHolidayDaysOnly($daysWithStatus);
 
-        return $daysWithStatus;
+        $calendarDates = $this->getCalendarDates($daysWithStatus);
+
+        return $calendarDates;
     }
 
     private function getAllDaysStatusByApi(string $startDate, string $endDate): array {
@@ -73,16 +79,20 @@ final class DaysWithStatusService
         return $dateInterval;
     }
 
-    private function getHolidayDaysOnly(array $allDays): array {
+    /**
+     * @param array $daysWithStatus
+     * @return CalendarDate[]
+     */
+    private function getCalendarDates(array $daysWithStatus): array {
 
-        $holidayDays = $allDays;
-
-        foreach($holidayDays as $day => $status){
-            if ($status == 0){
-                unset($holidayDays[$day]);
-            }
+        $calendarDate = [];
+        foreach ($daysWithStatus as $day => $isHoliday) {
+            $calendarDate[] = new CalendarDate(
+                DateTimeImmutable::createFromFormat("Y-m-d H:i:s", $day . ' 00:00:00'),
+                (bool)$isHoliday
+            );
         }
-        return $holidayDays;
+        return $calendarDate;
     }
 
 }

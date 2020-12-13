@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Класс получения графика работника
  */
-final class OneWorker
+final class GetWorkingPeriods
 {
 
     private GetWorkersScheduleHandler $getWorkersScheduleHandler;

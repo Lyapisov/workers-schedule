@@ -2,14 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\ScheduleCalculation\Entity;
+namespace App\ScheduleCalculation\UseCase\HolidaySchedule\Get;
 
+use App\ScheduleCalculation\UseCase\HolidaySchedule\Get\HolidayHours;
+use App\ScheduleCalculation\UseCase\ReadModel\Breakfast;
 use DateTimeImmutable;
 
 /**
  * Выходной день
  */
-final class Holiday
+final class HolidayPeriod
 {
     /**
      * Дата выходного дня
@@ -44,8 +46,8 @@ final class Holiday
     public static function ifFullDayHoliday(
         DateTimeImmutable $date,
         bool $isFullHoliday
-    ): Holiday {
-        $holidayDay = new Holiday();
+    ): HolidayPeriod {
+        $holidayDay = new HolidayPeriod();
         $holidayDay->date = $date;
         $holidayDay->isFullHoliday = $isFullHoliday;
         return $holidayDay;
@@ -56,9 +58,9 @@ final class Holiday
         HolidayHours $holidayHours,
         Breakfast $breakfast,
         bool $isFullHoliday
-    ): Holiday {
+    ): HolidayPeriod {
 
-        $holidayDay = new Holiday();
+        $holidayDay = new HolidayPeriod();
         $holidayDay->date = $date;
         $holidayDay->holidayHours = $holidayHours;
         $holidayDay->breakfast = $breakfast;

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Api\Controller\Http\HolidaySchedule;
 
 use App\ScheduleCalculation\UseCase\HolidaySchedule\Get\GetHolidayScheduleHandler;
-use App\ScheduleCalculation\UseCase\Schedule\Get\GetWorkersScheduleQuery;
+use App\ScheduleCalculation\UseCase\HolidaySchedule\Get\GetHolidayScheduleQuery;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Класс получения выходного графика работника
  */
-final class OneWorker
+final class GetHolidayPeriods
 {
     /**
      * @var GetHolidayScheduleHandler
@@ -41,7 +41,7 @@ final class OneWorker
      */
     public function __invoke(Request $request): JsonResponse
     {
-        $readModel = $this->getHolidayScheduleHandler->handle(new GetWorkersScheduleQuery(
+        $readModel = $this->getHolidayScheduleHandler->handle(new GetHolidayScheduleQuery(
             $request->get('workerId', ''),
             $request->get('startDate', ''),
             $request->get('endDate', '')

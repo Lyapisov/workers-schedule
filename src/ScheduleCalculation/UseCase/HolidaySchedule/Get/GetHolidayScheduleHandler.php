@@ -4,17 +4,15 @@ declare(strict_types=1);
 
 namespace App\ScheduleCalculation\UseCase\HolidaySchedule\Get;
 
-use App\ScheduleCalculation\Entity\Breakfast;
-use App\ScheduleCalculation\Entity\CalendarDate;
-use App\ScheduleCalculation\Entity\EventDay;
-use App\ScheduleCalculation\Entity\Holiday;
-use App\ScheduleCalculation\Entity\HolidayHours;
-use App\ScheduleCalculation\Entity\VacationDay;
-use App\ScheduleCalculation\Service\DaysWithStatusService;
-use App\ScheduleCalculation\UseCase\Schedule\Get\GetWorkersScheduleQuery;
-use App\ScheduleCalculation\UseCase\Schedule\Get\TeamEventsRepository;
-use App\ScheduleCalculation\UseCase\Schedule\Get\VacationRepository;
-use App\ScheduleCalculation\UseCase\Schedule\Get\WorkerRepository;
+use App\ScheduleCalculation\UseCase\ReadModel\Breakfast;
+use App\ScheduleCalculation\UseCase\ReadModel\EventDay;
+use App\ScheduleCalculation\UseCase\HolidaySchedule\Get\HolidayPeriod;
+use App\ScheduleCalculation\UseCase\HolidaySchedule\Get\HolidayHours;
+use App\ScheduleCalculation\UseCase\ReadModel\VacationDay;
+use App\ScheduleCalculation\Service\CalendarDates\CalendarDatesService;
+use App\ScheduleCalculation\UseCase\ReadModel\TeamEventsRepository;
+use App\ScheduleCalculation\UseCase\ReadModel\VacationRepository;
+use App\ScheduleCalculation\UseCase\ReadModel\WorkerRepository;
 use DateInterval;
 use DatePeriod;
 use DateTimeImmutable;
@@ -40,39 +38,38 @@ final class GetHolidayScheduleHandler
     private TeamEventsRepository $teamEventsRepository;
 
     /**
-     * @var DaysWithStatusService
+     * @var CalendarDatesService
      */
-    private DaysWithStatusService $daysService;
+    private CalendarDatesService $calendarDatesService;
 
     /**
      * GetWorkersScheduleHandler constructor.
      * @param WorkerRepository $workerRepository
      * @param VacationRepository $vocationRepository
      * @param TeamEventsRepository $teamEventsRepository
-     * @param DaysWithStatusService $daysService
+     * @param CalendarDatesService $calendarDatesService
      */
     public function __construct(
         WorkerRepository $workerRepository,
         VacationRepository $vocationRepository,
         TeamEventsRepository $teamEventsRepository,
-        DaysWithStatusService $daysService
+        CalendarDatesService $calendarDatesService
     ) {
         $this->workerRepository = $workerRepository;
         $this->vocationRepository = $vocationRepository;
         $this->teamEventsRepository = $teamEventsRepository;
-        $this->daysService = $daysService;
+        $this->calendarDatesService = $calendarDatesService;
     }
 
     /**
-     * @param GetWorkersScheduleQuery $query
+     * @param GetHolidayScheduleQuery $query
      * @return HolidayScheduleReadModel[]
      * @throws \Exception
      */
-    public function handle(GetWorkersScheduleQuery $query): array {
+    public function handle(GetHolidayScheduleQuery $query): array {
 
-        $daysWithStatusData = $this->daysService
+        $calendarDates = $this->calendarDatesService
             ->getForPeriod($query->getStartDate(), $query->getEndDate());
-        $calendarDates = $this->getCalendarDates($daysWithStatusData);
 
         $vacationData = $this->vocationRepository->findByWorkerId($query->getWorkerId());
         $vacationDays = $this->getVacationDays($vacationData);
@@ -199,7 +196,7 @@ final class GetHolidayScheduleHandler
      * @param array $workerData
      * @param CalendarDate[] $calendarDates
      * @param VacationDay[] $vacationDays
-     * @return Holiday[]
+     * @return HolidayPeriod[]
      */
     private function getHolidayDays(
         array $workerData,
@@ -213,7 +210,7 @@ final class GetHolidayScheduleHandler
             foreach ($vacationDays as $vacationDay) {
 
                 if ($date->isHoliday()) {
-                    $holidayDays[] = Holiday::ifFullDayHoliday(
+                    $holidayDays[] = HolidayPeriod::ifFullDayHoliday(
                         $date->getValue(),
                         $isFullHoliday = true
                     );
@@ -222,7 +219,7 @@ final class GetHolidayScheduleHandler
 
                 if ($date->getValue() == $vacationDay->getDate()) {
 
-                    $holidayDays[] = Holiday::ifFullDayHoliday(
+                    $holidayDays[] = HolidayPeriod::ifFullDayHoliday(
                         $date->getValue(),
                         $isFullHoliday = true
                     );
@@ -232,7 +229,7 @@ final class GetHolidayScheduleHandler
                 $countVacationDay++;
                 if($countVacationDay == count($vacationDays)) {
 
-                    $holidayDays[] = Holiday::ifPartDayHoliday(
+                    $holidayDays[] = HolidayPeriod::ifPartDayHoliday(
                         $date->getValue(),
                         new HolidayHours(
                             new DateTimeImmutable('00:00:00'),
@@ -253,7 +250,7 @@ final class GetHolidayScheduleHandler
     }
 
     /**
-     * @param Holiday[] $holidayDays
+     * @param HolidayPeriod[] $holidayDays
      * @param EventDay[] $eventDays
      */
     private function correctHoliday(array $holidayDays, array $eventDays) {

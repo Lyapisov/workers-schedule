@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\ScheduleCalculation\Repository;
 
 use App\ScheduleCalculation\Entity\Vacation;
-use App\ScheduleCalculation\UseCase\Schedule\Get\VacationRepository;
+use App\ScheduleCalculation\UseCase\ReadModel\VacationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class DoctrineVacationRepository implements VacationRepository

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\ScheduleCalculation\Entity;
+namespace App\ScheduleCalculation\UseCase\HolidaySchedule\Get;
 
 use DateTimeImmutable;
 
