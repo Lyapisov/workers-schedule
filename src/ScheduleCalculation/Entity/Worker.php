@@ -102,43 +102,4 @@ class Worker
         return $this->id;
     }
 
-    /**
-     * @return DateTimeImmutable
-     */
-    public function getStartTime(): DateTimeImmutable
-    {
-        return $this->startTime;
-    }
-
-    /**
-     * @return DateTimeImmutable
-     */
-    public function getEndTime(): DateTimeImmutable
-    {
-        return $this->endTime;
-    }
-
-    /**
-     * @return DateTimeImmutable
-     */
-    public function getStartBreak(): DateTimeImmutable
-    {
-        return $this->startBreak;
-    }
-
-    /**
-     * @return DateTimeImmutable
-     */
-    public function getEndBreak(): DateTimeImmutable
-    {
-        return $this->endBreak;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getVacation(): array
-    {
-        return $this->vacation;
-    }
 }

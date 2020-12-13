@@ -56,7 +56,6 @@ final class WorkingHours
         $this->endBeforeBreak = $endBeforeBreak;
         $this->startAfterBreak = $startAfterBreak;
         $this->endAfterBreak = $endAfterBreak;
-
     }
 
     /**
@@ -122,4 +121,5 @@ final class WorkingHours
     {
         $this->endAfterBreak = $endAfterBreak;
     }
+
 }

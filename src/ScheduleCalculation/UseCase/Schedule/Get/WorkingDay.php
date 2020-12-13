@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\ScheduleCalculation\UseCase\Schedule\Get;
 
-use App\ScheduleCalculation\UseCase\Schedule\Get\WorkingHours;
 use App\ScheduleCalculation\UseCase\ReadModel\Breakfast;
 use DateTimeImmutable;
 
@@ -65,23 +64,5 @@ final class WorkingDay
     {
         return $this->workingHours;
     }
-
-    /**
-     * @return Breakfast
-     */
-    public function getBreakfast(): Breakfast
-    {
-        return $this->breakfast;
-    }
-
-    /**
-     * @param DateTimeImmutable $date
-     */
-    public function setDate(DateTimeImmutable $date): void
-    {
-        $this->date = $date;
-    }
-
-
 
 }

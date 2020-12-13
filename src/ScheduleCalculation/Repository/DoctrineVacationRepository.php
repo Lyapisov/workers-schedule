@@ -42,19 +42,19 @@ class DoctrineVacationRepository implements VacationRepository
         $vacationDays = [];
         foreach ($vacationData as $vacation){
 
-            $begin = new DateTimeImmutable($vacation["startDate"]->format("Y-m-d"));
+            $start = new DateTimeImmutable($vacation["startDate"]
+                ->format("Y-m-d"));
             $end = new DateTimeImmutable($vacation["endDate"]->format("Y-m-d"));
             $end = $end->modify('+1 day');
 
             $interval = DateInterval::createFromDateString('1 day');
-            $period = new DatePeriod($begin, $interval, $end);
+            $period = new DatePeriod($start, $interval, $end);
 
             foreach ($period as $date) {
                 $vacationDays[] = new VacationDay($date);
             }
         }
         return $vacationDays;
-
     }
 
     /**
@@ -79,4 +79,5 @@ class DoctrineVacationRepository implements VacationRepository
             ->getQuery()
             ->getArrayResult();
     }
+
 }

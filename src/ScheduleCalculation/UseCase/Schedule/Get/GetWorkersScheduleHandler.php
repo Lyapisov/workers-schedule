@@ -12,8 +12,6 @@ use App\ScheduleCalculation\Service\CalendarDates\CalendarDatesService;
 use App\ScheduleCalculation\UseCase\ReadModel\TeamEventsRepository;
 use App\ScheduleCalculation\UseCase\ReadModel\VacationRepository;
 use App\ScheduleCalculation\UseCase\ReadModel\WorkerRepository;
-use DateInterval;
-use DatePeriod;
 use DateTimeImmutable;
 use Exception;
 use PharIo\Manifest\InvalidUrlException;

@@ -30,4 +30,5 @@ final class VacationDay
     {
         return $this->date;
     }
+
 }
