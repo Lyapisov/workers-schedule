@@ -6,6 +6,7 @@ namespace App\Api\Controller\Http\HolidaySchedule;
 
 use App\ScheduleCalculation\UseCase\HolidaySchedule\Get\GetHolidayScheduleHandler;
 use App\ScheduleCalculation\UseCase\HolidaySchedule\Get\GetHolidayScheduleQuery;
+use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -38,6 +39,7 @@ final class GetHolidayPeriods
      *
      * @param Request $request
      * @return JsonResponse
+     * @throws Exception
      */
     public function __invoke(Request $request): JsonResponse
     {

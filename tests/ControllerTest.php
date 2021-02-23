@@ -11,6 +11,7 @@ class ControllerTest extends WebTestCase
     protected function setUp() {
 
         parent::setUp();
+        self::ensureKernelShutdown();
         $this->client = static::createClient();
         $this->client->disableReboot();
         $this->em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
@@ -36,6 +37,7 @@ class ControllerTest extends WebTestCase
      * Форматирует данные в формате json, делая их более читаемыми.
      *
      * @param $content
+     * @return string
      */
     protected function prettifyJson($content): string
     {
