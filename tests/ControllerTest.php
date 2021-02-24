@@ -3,17 +3,18 @@ declare(strict_types=1);
 
 namespace App\Tests;
 
+use App\Tests\Helpers\JsonWebApiTestCaseTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ControllerTest extends WebTestCase
 {
+    use JsonWebApiTestCaseTrait;
 
     protected function setUp() {
 
         parent::setUp();
-        self::ensureKernelShutdown();
-        $this->client = static::createClient();
-        $this->client->disableReboot();
+        static::bootKernel();
+        $this->client = $this->createJsonClient();
         $this->em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
         $this->em->beginTransaction();
         $this->em->getConnection()->setAutoCommit(false);
