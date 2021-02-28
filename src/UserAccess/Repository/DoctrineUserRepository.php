@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\UserAccess\Repository;
 
+use App\UserAccess\Entity\User;
 use App\UserAccess\UseCase\ReadModel\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Ramsey\Uuid\Uuid;
 
 final class DoctrineUserRepository implements UserRepository
 {
@@ -38,6 +40,20 @@ final class DoctrineUserRepository implements UserRepository
     public function existsByEmail(string $email): bool
     {
         return $this->findByEmail($email);
+    }
+
+    /**
+     * @return string
+     */
+    public function generateNewId(): string
+    {
+        return Uuid::uuid4()->toString();
+    }
+
+    public function save(User $user): void
+    {
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
     }
 
 }

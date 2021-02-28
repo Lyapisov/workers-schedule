@@ -5,22 +5,33 @@ declare(strict_types=1);
 namespace App\UserAccess\Service;
 
 use App\UserAccess\UseCase\SignUp\PasswordOperator as IPasswordOperator;
+use Exception;
 
 final class PasswordOperator implements IPasswordOperator
 {
     /**
-     * @inheritDoc
+     * @param string $password
+     * @return string
+     * @throws Exception
      */
     public function encryptPassword(string $password): string
     {
-        // TODO: Implement encryptPassword() method.
+        $encryptPassword = password_hash($password, PASSWORD_BCRYPT);
+
+        if (!$encryptPassword) {
+            throw new Exception('Возникла ошибка при хэшировании пароля.');
+        }
+
+        return $encryptPassword;
     }
 
     /**
-     * @inheritDoc
+     * @param string $enteredPassword
+     * @param string $currentEncryptPassword
+     * @return bool
      */
-    public function checkPassword(string $enteredPassword, string $currentPassword): bool
+    public function checkPassword(string $enteredPassword, string $currentEncryptPassword): bool
     {
-        // TODO: Implement checkPassword() method.
+        return password_verify($enteredPassword, $currentEncryptPassword);
     }
 }

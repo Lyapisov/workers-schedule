@@ -77,7 +77,7 @@ class User
      *
      * @var string
      */
-    private string $annualAuthToken;
+    private string $annualToken;
 
     /**
      * User constructor.
@@ -87,7 +87,7 @@ class User
      * @param string $password
      * @param string $role
      * @param DateTimeImmutable $registrationDate
-     * @param string $authToken
+     * @param string $annualToken
      */
     public function __construct(
         string $id,
@@ -96,7 +96,7 @@ class User
         string $password,
         string $role,
         DateTimeImmutable $registrationDate,
-        string $authToken
+        string $annualToken
     ) {
         $this->id = $id;
         $this->login = $login;
@@ -104,7 +104,7 @@ class User
         $this->password = $password;
         $this->role = $role;
         $this->registrationDate = $registrationDate;
-        $this->authToken = $authToken;
+        $this->annualToken = $annualToken;
     }
 
     /**
@@ -158,9 +158,9 @@ class User
     /**
      * @return string
      */
-    public function getAuthToken(): string
+    public function getAnnualToken(): string
     {
-        return $this->authToken;
+        return $this->annualToken;
     }
 
 }

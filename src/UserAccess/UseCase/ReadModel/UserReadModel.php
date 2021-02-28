@@ -19,6 +19,10 @@ final class UserReadModel
      */
     private string $role;
     /**
+     * @var string
+     */
+    private string $annualToken;
+    /**
      * Временный токен авторизации. Генерируется если годовой токен действителен.
      *
      * @var string
@@ -29,17 +33,20 @@ final class UserReadModel
      * @param string $login
      * @param string $email
      * @param string $role
+     * @param string $annualToken
      * @param string $temporaryToken
      */
     public function __construct(
         string $login,
         string $email,
         string $role,
+        string $annualToken,
         string $temporaryToken
     ) {
         $this->login = $login;
         $this->email = $email;
         $this->role = $role;
+        $this->annualToken = $annualToken;
         $this->temporaryToken = $temporaryToken;
     }
 
@@ -65,6 +72,14 @@ final class UserReadModel
     public function getRole(): string
     {
         return $this->role;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAnnualToken(): string
+    {
+        return $this->annualToken;
     }
 
     /**

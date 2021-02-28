@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\UserAccess\UseCase\ReadModel;
 
+use App\UserAccess\Entity\User;
+
 interface UserRepository
 {
     /**
@@ -17,4 +19,14 @@ interface UserRepository
      * @return bool
      */
     public function existsByEmail(string $email): bool;
+
+    /**
+     * @return string
+     */
+    public function generateNewId(): string;
+
+    /**
+     * @param User $user
+     */
+    public function save(User $user): void;
 }
