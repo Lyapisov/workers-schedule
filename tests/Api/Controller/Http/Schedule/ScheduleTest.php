@@ -8,25 +8,18 @@ use App\Tests\ControllerTest;
 use App\ScheduleCalculation\Entity\TeamEvent;
 use App\ScheduleCalculation\Entity\Vacation;
 use App\ScheduleCalculation\Entity\Worker;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Component\HttpFoundation\Response;
 use DateTimeImmutable;
 
-
 final class ScheduleTest extends ControllerTest
 {
-
     const FIRST_WORKER_ID = 'idWorker1';
     const FIRST_VACATION_ID = 'idVacation1';
     const SECOND_VACATION_ID = 'idVacation2';
     const FIRST_TEAM_EVENT_ID = 'idTeamEvent1';
 
-    protected EntityManagerInterface $em;
-    protected KernelBrowser $client;
-
-    public function testSuccessful() {
-
+    public function testSuccessful()
+    {
         $firstWorker = new Worker(
             $id = self::FIRST_WORKER_ID,
             $startWork = DateTimeImmutable::createFromFormat('H:i:s', '08:00:00'),

@@ -27,3 +27,8 @@ doctrine:
                 type: annotation
                 dir: '%kernel.project_dir%/src/ScheduleCalculation/Entity'
                 prefix: 'App\ScheduleCalculation\Entity'
+            UserAccess:
+                is_bundle: false
+                type: annotation
+                dir: '%kernel.project_dir%/src/UserAccess/Entity'
+                prefix: 'App\UserAccess\Entity'

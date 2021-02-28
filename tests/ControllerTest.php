@@ -3,19 +3,20 @@ declare(strict_types=1);
 
 namespace App\Tests;
 
-use App\Tests\Helpers\JsonWebApiTestCaseTrait;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ControllerTest extends WebTestCase
 {
-    use JsonWebApiTestCaseTrait;
+    protected EntityManagerInterface $em;
+    protected KernelBrowser $client;
 
-    protected function setUp() {
-
+    protected function setUp()
+    {
         parent::setUp();
-        static::bootKernel();
-        $this->client = $this->createJsonClient();
-        $this->em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
+        $this->client = static::createClient();
+        $this->em = $this->getEntityManager();
         $this->em->beginTransaction();
         $this->em->getConnection()->setAutoCommit(false);
     }
@@ -46,6 +47,18 @@ class ControllerTest extends WebTestCase
             json_decode($content),
             JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
         );
+    }
+
+    public static function getEntityManager(): ?EntityManagerInterface
+    {
+        if (static::$kernel) {
+            return static::$kernel
+                ->getContainer()
+                ->get('doctrine.orm.entity_manager')
+                ;
+        }
+
+        return null;
     }
 
 }

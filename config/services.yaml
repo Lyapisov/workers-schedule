@@ -13,6 +13,12 @@ services:
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/'
+        exclude:
+            - 'Kernel.php'
+            - '../src/Tests/'
+
     App\ScheduleCalculation\:
         resource: '../src/ScheduleCalculation/'
         exclude:
@@ -20,9 +26,14 @@ services:
             - 'Repository/'
             - 'Service/'
             - 'UseCase/'
-            - 'Kernel.php'
-            - '../src/Tests/'
 
+    App\UserAccess\:
+        resource: '../src/UserAccess/'
+        exclude:
+            - 'Entity/'
+            - 'Repository/'
+            - 'Service/'
+            - 'UseCase/'
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
