@@ -6,6 +6,7 @@ namespace App\Api\Controller\Http\UserAccess;
 
 use App\UserAccess\UseCase\SignUp\SignUpCommand;
 use App\UserAccess\UseCase\SignUp\SignUpHandler;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -43,6 +44,18 @@ final class SignUp
                 $request->get('password', ''),
                 $request->get('role', '')
             ));
+
+        $responseContent = [
+            'user' =>
+                [
+                    'login' => $readModel->getLogin(),
+                    'email' => $readModel->getEmail(),
+                    'role' => $readModel->getRole(),
+                    'temporaryToken' => $readModel->getTemporaryToken(),
+                ]
+        ];
+
+        return new JsonResponse($responseContent, JsonResponse::HTTP_OK);
     }
 
 }

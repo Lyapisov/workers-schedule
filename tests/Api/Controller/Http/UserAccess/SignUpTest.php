@@ -36,6 +36,7 @@ final class SignUpTest extends ControllerTest
                         'login' => self::USER_LOGIN,
                         'email' => self::USER_EMAIL,
                         'role' => self::USER_FAN_ROLE,
+                        'temporaryToken' => '@uuid@',
                     ]
             ];
 

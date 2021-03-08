@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\UserAccess\Service;
 
 use App\UserAccess\UseCase\SignUp\TokenOperator as ITokenOperator;
+use Ramsey\Uuid\Uuid;
 
 final class TokenOperator implements ITokenOperator
 {
@@ -13,7 +14,7 @@ final class TokenOperator implements ITokenOperator
      */
     public function generateAnnual(): string
     {
-        // TODO: Implement generateAnnual() method.
+        return Uuid::uuid4()->toString();
     }
 
     /**
@@ -21,7 +22,7 @@ final class TokenOperator implements ITokenOperator
      */
     public function generateTemporary(): string
     {
-        // TODO: Implement generateTemporary() method.
+        return Uuid::uuid4()->toString();
     }
 
     /**

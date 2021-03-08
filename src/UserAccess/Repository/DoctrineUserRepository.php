@@ -7,6 +7,7 @@ namespace App\UserAccess\Repository;
 use App\UserAccess\Entity\User;
 use App\UserAccess\UseCase\ReadModel\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ObjectRepository;
 use Ramsey\Uuid\Uuid;
 
 final class DoctrineUserRepository implements UserRepository
@@ -15,6 +16,7 @@ final class DoctrineUserRepository implements UserRepository
      * @var EntityManagerInterface
      */
     private EntityManagerInterface $entityManager;
+    private ObjectRepository $userRepository;
 
     /**
      * @param EntityManagerInterface $entityManager
@@ -22,6 +24,7 @@ final class DoctrineUserRepository implements UserRepository
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
+        $this->userRepository = $this->entityManager->getRepository(User::class);
     }
 
     /**
@@ -30,7 +33,8 @@ final class DoctrineUserRepository implements UserRepository
      */
     public function existsByLogin(string $login): bool
     {
-        return $this->findByLogin($login);
+        $user = $this->userRepository->findByLogin($login);
+        return $user ? true : false;
     }
 
     /**
@@ -39,7 +43,8 @@ final class DoctrineUserRepository implements UserRepository
      */
     public function existsByEmail(string $email): bool
     {
-        return $this->findByEmail($email);
+        $user = $this->userRepository->findByEmail($email);
+        return $user ? true : false;
     }
 
     /**
