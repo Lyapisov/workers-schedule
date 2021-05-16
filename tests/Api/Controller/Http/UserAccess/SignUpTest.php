@@ -21,7 +21,9 @@ final class SignUpTest extends ControllerTest
 
     public function testSuccessful()
     {
-        copy('src/FilesDataBase/DataBase/UserAccess/Users/users.csv', 'src/FilesDataBase/DataBase/UserAccess/Users/users-copy.csv');
+        copy('src/FilesDataBase/DataBase/UserAccess/Users/users.csv',
+            'src/FilesDataBase/DataBase/UserAccess/Users/users-copy.csv'
+        );
 
         $this->client->request(
             'POST',
@@ -50,7 +52,9 @@ final class SignUpTest extends ControllerTest
             $response->getStatusCode()
         );
 
-        copy('src/FilesDataBase/DataBase/UserAccess/Users/users-copy.csv', 'src/FilesDataBase/DataBase/UserAccess/Users/users.csv');
+        copy('src/FilesDataBase/DataBase/UserAccess/Users/users-copy.csv',
+            'src/FilesDataBase/DataBase/UserAccess/Users/users.csv'
+        );
         unlink('src/FilesDataBase/DataBase/UserAccess/Users/users-copy.csv');
     }
 
