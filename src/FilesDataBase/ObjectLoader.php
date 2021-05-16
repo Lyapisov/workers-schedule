@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\FilesDataBase\UserAccess;
+namespace App\FilesDataBase;
 
 use App\UserAccess\Entity\User;
 
@@ -18,9 +18,11 @@ class ObjectLoader
     protected function loadObject(string $className, array $data): ?object
     {
         $object = null;
+
         if ($className === self::USER_CLASS) {
             $object = $this->loadUser($data);
         }
+
 
         return $object;
     }
@@ -31,14 +33,13 @@ class ObjectLoader
      */
     private function loadUser(array $data): object
     {
-
         $user = new User(
             $data[0],
             $data[1],
             $data[2],
             $data[3],
             $data[4],
-            $data[5],
+            new \DateTimeImmutable($data[5]),
             $data[6]
         );
 

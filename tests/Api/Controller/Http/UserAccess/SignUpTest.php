@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Api\Controller\Http\UserAccess;
+namespace App\Tests\Api\Controller\Http\UserAccess;
 
 use App\Tests\ControllerTest;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,6 +21,8 @@ final class SignUpTest extends ControllerTest
 
     public function testSuccessful()
     {
+        copy('src/FilesDataBase/DataBase/UserAccess/Users/users.csv', 'src/FilesDataBase/DataBase/UserAccess/Users/users-copy.csv');
+
         $this->client->request(
             'POST',
             self::query(),
@@ -31,18 +33,6 @@ final class SignUpTest extends ControllerTest
                 'role' => self::USER_FAN_ROLE,
             ]
         );
-
-//        $expectedResponseContent =
-//            [
-//                'user' =>
-//                    [
-//                        'login' => self::USER_LOGIN,
-//                        'email' => self::USER_EMAIL,
-//                        'role' => self::USER_FAN_ROLE,
-//                        'annualToken' => '@uuid',
-//                        'temporaryToken' => '@uuid@',
-//                    ]
-//            ];
 
         $response = $this->client->getResponse();
         $responseContent = $response->getContent();
@@ -55,13 +45,13 @@ final class SignUpTest extends ControllerTest
         $this->assertEquals(self::USER_EMAIL, $responseContent['user']['email']);
         $this->assertEquals(self::USER_FAN_ROLE, $responseContent['user']['role']);
 
-//        $expectedResponseContent = trim(json_encode($expectedResponseContent));
-//
-//        $this->assertEquals($expectedResponseContent, $responseContent);
-//        $this->assertEquals(
-//            Response::HTTP_OK,
-//            $response->getStatusCode()
-//        );
+        $this->assertEquals(
+            Response::HTTP_OK,
+            $response->getStatusCode()
+        );
+
+        copy('src/FilesDataBase/DataBase/UserAccess/Users/users-copy.csv', 'src/FilesDataBase/DataBase/UserAccess/Users/users.csv');
+        unlink('src/FilesDataBase/DataBase/UserAccess/Users/users-copy.csv');
     }
 
     private static function query(): string

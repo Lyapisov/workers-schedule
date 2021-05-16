@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace App\FilesDataBase;
 
-use App\UserAccess\Entity\User;
-use App\FilesDataBase\UserAccess\ObjectLoader;
-
 final class OperatorSCV extends ObjectLoader
 {
     private const GET_PREFIX = 'get';
@@ -23,18 +20,6 @@ final class OperatorSCV extends ObjectLoader
     }
 
     /**
-     * @param string $db
-     */
-    public function createDataBase(string $db): void
-    {
-        file_put_contents($db, 's');
-var_dump('pos');
-        if (!file_exists($db)) {
-            throw new \DomainException('Ошибка при создании базы данных users.csv');
-        }
-    }
-
-    /**
      * @param object $newRow
      * @param $db
      */
@@ -46,16 +31,24 @@ var_dump('pos');
         $methods = get_class_methods($class);
 
         $handle = fopen($db, "a");
-
+        $fields = [];
         foreach ($methods as $method) {
-            if (!strpos($method, self::GET_PREFIX)) {
+            if (strpos($method, self::GET_PREFIX) === false) {
                 continue;
             }
 
-            $value = $class->$method;
-            fputcsv($handle, explode(";", $value), ";");
+            $value = $newRow->$method();
+            if (is_object($value)) {
+                $classValue = get_class($value);
+                if (\DateTimeImmutable::class == $classValue) {
+                    $value = $value->format(DATE_ATOM);
+                }
+            }
+
+            $fields[] = $value;
         }
 
+        fputcsv($handle, $fields, ";");
         fclose($handle);
     }
 
@@ -96,12 +89,12 @@ var_dump('pos');
     private function checkModel(object $model): void
     {
         $class = get_class($model);
-        if ($class){
+        if (!$class){
             throw new \DomainException('Запиываемая модель не найдена');
         }
 
         $methods = get_class_methods($class);
-        if (empty($methods)){
+        if (!$methods){
             throw new \DomainException('У модели отсутствуют методы для получения данных');
         }
     }
@@ -115,6 +108,7 @@ var_dump('pos');
         $handle = fopen($db, "r");
 
         $allRows = [];
+        fgetcsv($handle);
         while (($row = fgetcsv($handle, 0, ";")) !== false) {
             $allRows[] = $row;
         }
@@ -129,9 +123,10 @@ var_dump('pos');
      */
     private function getClass(string $db): ?string
     {
-        $dbName = substr(end(explode('/', $db)), -5);
-
+        $arrayName = explode('/', $db);
+        $dbName = substr(end($arrayName), 0,-4);
         if ($dbName === 'users') {
+
             return 'User';
         }
 

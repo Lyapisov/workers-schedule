@@ -26,6 +26,7 @@ class ControllerTest extends WebTestCase
         $this->em->getConnection()->rollback();
         $this->em->close();
         parent::tearDown();
+
     }
 
     protected function saveEntity(object $entity)

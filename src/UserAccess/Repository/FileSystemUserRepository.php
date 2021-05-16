@@ -7,11 +7,12 @@ namespace App\UserAccess\Repository;
 use App\UserAccess\Entity\User;
 use App\UserAccess\UseCase\ReadModel\UserRepository;
 use App\FilesDataBase\OperatorSCV;
+use Exception;
 use Ramsey\Uuid\Uuid;
 
 final class FileSystemUserRepository implements UserRepository
 {
-    const USERS_DATA_BASE = '\App\FilesDataBase\DataBase\UserAccess\Users\users.csv';
+    const USERS_DATA_BASE = 'src/FilesDataBase/DataBase/UserAccess/Users/users.csv';
 
     private OperatorSCV $operatorSCV;
 
@@ -31,10 +32,9 @@ final class FileSystemUserRepository implements UserRepository
         $isDbFound = $this->operatorSCV->findDataBase(self::USERS_DATA_BASE);
 
         if (!$isDbFound) {
-            $this->operatorSCV->createDataBase(self::USERS_DATA_BASE);
+            throw new Exception('База данных не найдена!');
         }
-        $isDbFound = $this->operatorSCV->findDataBase(self::USERS_DATA_BASE);
-var_dump($isDbFound);
+
         $field = 'login';
         $value = $login;
         $user = $this->operatorSCV->findByValue($field, $value, self::USERS_DATA_BASE);
@@ -50,7 +50,7 @@ var_dump($isDbFound);
         $isDbFound = $this->operatorSCV->findDataBase(self::USERS_DATA_BASE);
 
         if (!$isDbFound) {
-            $this->operatorSCV->createDataBase(self::USERS_DATA_BASE);
+            throw new Exception('База данных не найдена!');
         }
 
         $field = 'email';
@@ -76,10 +76,9 @@ var_dump($isDbFound);
         $isDbFound = $this->operatorSCV->findDataBase(self::USERS_DATA_BASE);
 
         if (!$isDbFound) {
-            $this->operatorSCV->createDataBase(self::USERS_DATA_BASE);
+            throw new Exception('База данных не найдена!');
         }
 
         $this->operatorSCV->recordRow($user, self::USERS_DATA_BASE);
     }
-
 }

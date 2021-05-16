@@ -24,3 +24,7 @@ run-tests: ## Start tests
 
 docker-down: ## Stop container
 	docker-compose down --remove-orphans
+
+init-file-database:
+	touch src/FilesDataBase/DataBase/UserAccess/Users/users.csv
+	printf "id;login;email;password;role;registrationDate;annualToken \n" >> src/FilesDataBase/DataBase/UserAccess/Users/users.csv

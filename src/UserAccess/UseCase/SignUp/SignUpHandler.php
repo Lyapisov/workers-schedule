@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\UserAccess\UseCase\SignUp;
 
 use App\UserAccess\Entity\User;
-use App\UserAccess\UseCase\SignUp\PasswordOperator;
 use App\UserAccess\UseCase\ReadModel\UserReadModel;
 use App\UserAccess\UseCase\ReadModel\UserRepository;
 use DateTimeImmutable;
@@ -55,8 +54,6 @@ final class SignUpHandler
         if ($this->userRepository->existsByEmail($email)) {
             throw new \DomainException('Пользователь с такой почтой уже существует.');
         }
-
-        var_dump('user: ' . $role);
 
         $encryptedPassword = '';
         if ($command->getPassword()) {
