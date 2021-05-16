@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\UserAccess\UseCase\SignUp;
 
 use App\UserAccess\Entity\User;
+use App\UserAccess\UseCase\SignUp\PasswordOperator;
 use App\UserAccess\UseCase\ReadModel\UserReadModel;
 use App\UserAccess\UseCase\ReadModel\UserRepository;
 use DateTimeImmutable;
@@ -15,10 +16,12 @@ final class SignUpHandler
      * @var UserRepository
      */
     private UserRepository $userRepository;
+
     /**
      * @var PasswordOperator
      */
     private PasswordOperator $passwordOperator;
+
     /**
      * @var TokenOperator
      */
@@ -53,6 +56,8 @@ final class SignUpHandler
             throw new \DomainException('Пользователь с такой почтой уже существует.');
         }
 
+        var_dump('user: ' . $role);
+
         $encryptedPassword = '';
         if ($command->getPassword()) {
             $encryptedPassword = $this->passwordOperator->encryptPassword($command->getPassword());
@@ -80,7 +85,7 @@ final class SignUpHandler
             $user->getEmail(),
             $user->getRole(),
             $user->getAnnualToken(),
-            $temporaryToken
+            $temporaryToken,
         );
     }
 }

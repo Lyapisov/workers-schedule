@@ -51,6 +51,7 @@ final class SignUp
                     'login' => $readModel->getLogin(),
                     'email' => $readModel->getEmail(),
                     'role' => $readModel->getRole(),
+                    'annualToken' => $readModel->getAnnualToken(),
                     'temporaryToken' => $readModel->getTemporaryToken(),
                 ]
         ];
