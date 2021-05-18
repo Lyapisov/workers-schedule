@@ -29,3 +29,8 @@
 ###< squizlabs/php_codesniffer ###
 
 /src/FilesDataBase/DataBase/UserAccess
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###

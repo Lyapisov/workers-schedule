@@ -12,7 +12,7 @@ class ControllerTest extends WebTestCase
     protected EntityManagerInterface $em;
     protected KernelBrowser $client;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->client = static::createClient();
