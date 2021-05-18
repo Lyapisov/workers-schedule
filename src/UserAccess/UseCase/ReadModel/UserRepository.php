@@ -9,6 +9,12 @@ use App\UserAccess\Entity\User;
 interface UserRepository
 {
     /**
+     * @param string $id
+     * @return User|null
+     */
+    public function findById(string $id): ?User;
+
+    /**
      * @param string $login
      * @return bool
      */

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\FilesDataBase;
 
 use App\UserAccess\Entity\User;
+use DateTimeImmutable;
 
 class ObjectLoader
 {
@@ -39,7 +40,7 @@ class ObjectLoader
             $data[2],
             $data[3],
             $data[4],
-            new \DateTimeImmutable($data[5]),
+            new DateTimeImmutable($data[5]),
             $data[6]
         );
 

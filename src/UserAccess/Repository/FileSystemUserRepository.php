@@ -25,8 +25,27 @@ final class FileSystemUserRepository implements UserRepository
     }
 
     /**
-     * @inheritDoc
+     * @param string $id
+     * @return User|null
+     * @throws Exception
      */
+    public function findById(string $id): ?User
+    {
+        $isDbFound = $this->operatorSCV->findDataBase(self::USERS_DATA_BASE);
+
+        if (!$isDbFound) {
+            throw new Exception('База данных не найдена!');
+        }
+
+        $field = 'id';
+        $value = $id;
+
+        /** @var User $user */
+        $user = $this->operatorSCV->findByValue($field, $value, self::USERS_DATA_BASE);
+
+        return $user;
+    }
+
     public function existsByLogin(string $login): bool
     {
         $isDbFound = $this->operatorSCV->findDataBase(self::USERS_DATA_BASE);
@@ -42,9 +61,6 @@ final class FileSystemUserRepository implements UserRepository
         return empty($user) ? false : true;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function existsByEmail(string $email): bool
     {
         $isDbFound = $this->operatorSCV->findDataBase(self::USERS_DATA_BASE);
