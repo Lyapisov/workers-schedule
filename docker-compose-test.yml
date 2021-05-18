@@ -3,6 +3,8 @@ version: '3.7'
 services:
 
   nginx:
+    env_file:
+      - .env.test
     build:
       context: ./docker/test/nginx
       dockerfile: Dockerfile
@@ -14,30 +16,39 @@ services:
       - ${NGINX_EXTERNAL_PORT}:80
 
   php-fpm:
+    env_file:
+      - .env.test
     build:
       context: docker/test/php-fpm
       dockerfile: Dockerfile
+    environment:
+      APP_ENV: test
     depends_on:
       - db
     volumes:
       - ./:/app
 
   php-cli:
+    env_file:
+      - .env.test
     build:
-      context: docker/development/php-cli
+      context: docker/test/php-cli
       dockerfile: Dockerfile
     environment:
       DATABASE_URL: pgsql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_NAME}?serverVersion=11&charset=utf8
       APP_SECRET: dcd36bb8571cff644b98af8a75efe183
       TEST_DATABASE_URL: pgsql://${DB_ROOT_PASSWORD}:${DB_ROOT_PASSWORD}@${DB_HOST}:5432/${DB_TEST_NAME}?serverVersion=11&charset=utf8
+      APP_ENV: test
     depends_on:
       - db
     volumes:
       - ./:/app
 
   db:
+    env_file:
+      - .env.test
     image: postgres:11.2-alpine
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_DB: ${DB_TEST_NAME}
