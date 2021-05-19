@@ -12,6 +12,7 @@ use App\ScheduleCalculation\Service\CalendarDates\CalendarDatesService;
 use App\ScheduleCalculation\UseCase\ReadModel\TeamEventsRepository;
 use App\ScheduleCalculation\UseCase\ReadModel\VacationRepository;
 use App\ScheduleCalculation\UseCase\ReadModel\WorkerRepository;
+use App\SharedKernel\Domain\Exceptions\NotFoundException;
 use DateTimeImmutable;
 use Exception;
 use PharIo\Manifest\InvalidUrlException;
@@ -42,7 +43,6 @@ final class GetWorkersScheduleHandler
     private CalendarDatesService $calendarDatesService;
 
     /**
-     * GetWorkersScheduleHandler constructor.
      * @param WorkerRepository $workerRepository
      * @param VacationRepository $vocationRepository
      * @param TeamEventsRepository $teamEventsRepository
@@ -76,7 +76,7 @@ final class GetWorkersScheduleHandler
         $workerData = $this->workerRepository
             ->find($query->getWorkerId());
 
-        if (empty($workerData)) throw new InvalidUrlException('Нет такого работника!');
+        if (empty($workerData)) throw new NotFoundException('Нет такого работника!');
 
         $workingDays = $this->getWorkingDays($workerData, $calendarDates, $vacationDays);
 
