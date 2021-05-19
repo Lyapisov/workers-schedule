@@ -29,7 +29,7 @@ final class DoctrineUserRepository implements UserRepository
 
     public function findById(string $id): ?User
     {
-        return null;
+        return $this->userRepository->find($id);
     }
 
     /**
@@ -39,7 +39,7 @@ final class DoctrineUserRepository implements UserRepository
     public function existsByLogin(string $login): bool
     {
         $user = $this->userRepository->findByLogin($login);
-        return $user ? true : false;
+        return (bool)$user;
     }
 
     /**
@@ -49,7 +49,7 @@ final class DoctrineUserRepository implements UserRepository
     public function existsByEmail(string $email): bool
     {
         $user = $this->userRepository->findByEmail($email);
-        return $user ? true : false;
+        return (bool)$user;
     }
 
     /**

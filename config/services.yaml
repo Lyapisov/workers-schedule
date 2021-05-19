@@ -50,6 +50,7 @@ services:
     ######################################### Context #########################################
 
     ######################################### Repositories #########################################
+    App\UserAccess\Repository\DoctrineUserRepository:
     App\UserAccess\Repository\FileSystemUserRepository:
         arguments:
             - '@App\FilesDataBase\OperatorSCV'
