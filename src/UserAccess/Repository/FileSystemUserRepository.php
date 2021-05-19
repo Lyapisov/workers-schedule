@@ -12,16 +12,16 @@ use Ramsey\Uuid\Uuid;
 
 final class FileSystemUserRepository implements UserRepository
 {
-    const USERS_DATA_BASE = 'src/FilesDataBase/DataBase/UserAccess/Users/users.csv';
-
     private OperatorSCV $operatorSCV;
+    private string $userDataBase;
 
     /**
      * @param OperatorSCV $operatorSCV
      */
-    public function __construct(OperatorSCV $operatorSCV)
+    public function __construct(OperatorSCV $operatorSCV, string $userDataBase)
     {
         $this->operatorSCV = $operatorSCV;
+        $this->userDataBase = $userDataBase;
     }
 
     /**
@@ -31,7 +31,7 @@ final class FileSystemUserRepository implements UserRepository
      */
     public function findById(string $id): ?User
     {
-        $isDbFound = $this->operatorSCV->findDataBase(self::USERS_DATA_BASE);
+        $isDbFound = $this->operatorSCV->findDataBase($this->userDataBase);
 
         if (!$isDbFound) {
             throw new Exception('База данных не найдена!');
@@ -41,14 +41,14 @@ final class FileSystemUserRepository implements UserRepository
         $value = $id;
 
         /** @var User $user */
-        $user = $this->operatorSCV->findByValue($field, $value, self::USERS_DATA_BASE);
+        $user = $this->operatorSCV->findByValue($field, $value, $this->userDataBase);
 
         return $user;
     }
 
     public function existsByLogin(string $login): bool
     {
-        $isDbFound = $this->operatorSCV->findDataBase(self::USERS_DATA_BASE);
+        $isDbFound = $this->operatorSCV->findDataBase($this->userDataBase);
 
         if (!$isDbFound) {
             throw new Exception('База данных не найдена!');
@@ -56,14 +56,14 @@ final class FileSystemUserRepository implements UserRepository
 
         $field = 'login';
         $value = $login;
-        $user = $this->operatorSCV->findByValue($field, $value, self::USERS_DATA_BASE);
+        $user = $this->operatorSCV->findByValue($field, $value, $this->userDataBase);
 
         return empty($user) ? false : true;
     }
 
     public function existsByEmail(string $email): bool
     {
-        $isDbFound = $this->operatorSCV->findDataBase(self::USERS_DATA_BASE);
+        $isDbFound = $this->operatorSCV->findDataBase($this->userDataBase);
 
         if (!$isDbFound) {
             throw new Exception('База данных не найдена!');
@@ -71,7 +71,7 @@ final class FileSystemUserRepository implements UserRepository
 
         $field = 'email';
         $value = $email;
-        $user = $this->operatorSCV->findByValue($field, $value, self::USERS_DATA_BASE);
+        $user = $this->operatorSCV->findByValue($field, $value, $this->userDataBase);
 
         return empty($user) ? false : true;
     }
@@ -89,12 +89,12 @@ final class FileSystemUserRepository implements UserRepository
      */
     public function save(User $user): void
     {
-        $isDbFound = $this->operatorSCV->findDataBase(self::USERS_DATA_BASE);
+        $isDbFound = $this->operatorSCV->findDataBase($this->userDataBase);
 
         if (!$isDbFound) {
             throw new Exception('База данных не найдена!');
         }
 
-        $this->operatorSCV->recordRow($user, self::USERS_DATA_BASE);
+        $this->operatorSCV->recordRow($user, $this->userDataBase);
     }
 }

@@ -53,15 +53,14 @@ services:
     App\UserAccess\Repository\FileSystemUserRepository:
         arguments:
             - '@App\FilesDataBase\OperatorSCV'
+            - '%env(resolve:USER_DATA_SOURCE)%'
 
     App\UserAccess\UseCase\ReadModel\UserRepository: '@App\UserAccess\Repository\FileSystemUserRepository'
     ######################################### Repositories #########################################
 
-    # controllers are imported separately to make sure services can be injected
-    # as action arguments even if you don't extend any base controller class
+    ######################################### Controllers #########################################
     App\Api\Controller\Http\:
         resource: '../src/Api/Controller/Http'
         tags: ['controller.service_arguments']
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    ######################################### Controllers #########################################
