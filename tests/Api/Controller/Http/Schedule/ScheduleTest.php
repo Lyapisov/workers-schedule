@@ -415,11 +415,7 @@ final class ScheduleTest extends ControllerTest
         $expectedResponseContent = trim(json_encode($expectedResponseContent));
 
         $this->assertEquals($expectedResponseContent, $responseContent);
-
-        $this->assertEquals(
-            Response::HTTP_OK,
-            $response->getStatusCode()
-        );
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
     }
 
     public function testIfEmptyQuery() {
@@ -432,7 +428,8 @@ final class ScheduleTest extends ControllerTest
         $expectedResponseContent =
             [
                 'error' => [
-                    'messages' => 'Введены не все данные!',
+                    'messages' => [ 'Введены не все данные!' ],
+                    'code' => 1,
                 ],
             ];
 
@@ -442,11 +439,7 @@ final class ScheduleTest extends ControllerTest
         $expectedResponseContent = trim(json_encode($expectedResponseContent));
 
         $this->assertEquals($expectedResponseContent, $responseContent);
-
-        $this->assertEquals(
-            Response::HTTP_BAD_REQUEST,
-            $response->getStatusCode()
-        );
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }
 
     public function testIfNotWorker() {
@@ -459,7 +452,8 @@ final class ScheduleTest extends ControllerTest
         $expectedResponseContent =
             [
                 'error' => [
-                    'messages' => 'Нет такого работника!',
+                    'messages' => [ 'Нет такого работника!' ],
+                    'code' => 1,
                 ],
             ];
 
@@ -469,11 +463,7 @@ final class ScheduleTest extends ControllerTest
         $expectedResponseContent = trim(json_encode($expectedResponseContent));
 
         $this->assertEquals($expectedResponseContent, $responseContent);
-
-        $this->assertEquals(
-            Response::HTTP_BAD_REQUEST,
-            $response->getStatusCode()
-        );
+        $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
     }
 
     private static function formUrl(
@@ -483,5 +473,4 @@ final class ScheduleTest extends ControllerTest
     ): string {
         return '/workers-schedule?workerId=' . $workerId . '&startDate=' . $startDate . '&endDate=' . $endDate;
     }
-
 }

@@ -18,6 +18,14 @@ services:
             - 'Kernel.php'
             - '../src/Tests/'
 
+    App\SharedKernel\:
+        resource: '../src/SharedKernel/'
+        exclude:
+            - 'Application/'
+            - 'Domain/'
+            - 'Infrastructure/'
+            - 'Test/'
+
     App\FilesDataBase\:
         resource: '../src/FilesDataBase/'
         exclude:
@@ -46,7 +54,6 @@ services:
             - 'Domain/'
             - 'Infrastructure/'
             - 'Test/'
-
     ######################################### Context #########################################
 
     ######################################### Repositories #########################################
@@ -59,9 +66,14 @@ services:
     App\UserAccess\UseCase\ReadModel\UserRepository: '@App\UserAccess\Repository\FileSystemUserRepository'
     ######################################### Repositories #########################################
 
+    ######################################### Listeners #########################################
+    App\SharedKernel\Infrastructure\EventListeners\ExceptionListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+    ######################################### Listeners #########################################
+
     ######################################### Controllers #########################################
     App\Api\Controller\Http\:
         resource: '../src/Api/Controller/Http'
         tags: ['controller.service_arguments']
-
     ######################################### Controllers #########################################
