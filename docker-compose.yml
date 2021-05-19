@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.7'
 
 services:
 
@@ -19,6 +19,9 @@ services:
       context: docker/development/php-fpm
       dockerfile: Dockerfile
     environment:
+      DATABASE_URL: pgsql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_NAME}?serverVersion=13&charset=utf8
+      APP_SECRET: 8d6efe5f71a7c9a3c6c2854d44fed71d
+      TEST_DATABASE_URL: pgsql://${DB_ROOT_PASSWORD}:${DB_ROOT_PASSWORD}@${DB_HOST}:5432/${DB_TEST_NAME}?serverVersion=13&charset=utf8
       APP_ENV: dev
     restart: always
     depends_on:
@@ -31,9 +34,9 @@ services:
       context: docker/development/php-cli
       dockerfile: Dockerfile
     environment:
-      DATABASE_URL: pgsql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_NAME}?serverVersion=11&charset=utf8
+      DATABASE_URL: pgsql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_NAME}?serverVersion=13&charset=utf8
       APP_SECRET: 8d6efe5f71a7c9a3c6c2854d44fed71d
-      TEST_DATABASE_URL: pgsql://${DB_ROOT_PASSWORD}:${DB_ROOT_PASSWORD}@${DB_HOST}:5432/${DB_TEST_NAME}?serverVersion=11&charset=utf8
+      TEST_DATABASE_URL: pgsql://${DB_ROOT_PASSWORD}:${DB_ROOT_PASSWORD}@${DB_HOST}:5432/${DB_TEST_NAME}?serverVersion=13&charset=utf8
       APP_ENV: dev
     depends_on:
       - db
@@ -41,7 +44,7 @@ services:
     - ./:/app
 
   db:
-    image: postgres:11.2-alpine
+    image: postgres:13.3-alpine
     volumes:
       - db:/var/lib/postgresql/data
     restart: always
