@@ -63,7 +63,7 @@ services:
             - '@App\FilesDataBase\OperatorSCV'
             - '%env(resolve:USER_DATA_SOURCE)%'
 
-    App\UserAccess\UseCase\ReadModel\UserRepository: '@App\UserAccess\Repository\FileSystemUserRepository'
+    App\UserAccess\UseCase\ReadModel\UserRepository: '@App\UserAccess\Repository\DoctrineUserRepository'
     ######################################### Repositories #########################################
 
     ######################################### Listeners #########################################

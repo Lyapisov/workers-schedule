@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\UserAccess\UseCase\SignUp;
 
+use App\UserAccess\Entity\Role;
 use App\UserAccess\Entity\User;
 use App\UserAccess\UseCase\ReadModel\UserReadModel;
 use App\UserAccess\UseCase\ReadModel\UserRepository;
@@ -68,7 +69,7 @@ final class SignUpHandler
             $login,
             $email,
             $encryptedPassword,
-            $role,
+            Role::create($role),
             new DateTimeImmutable(),
             $annualToken
         );
@@ -80,7 +81,7 @@ final class SignUpHandler
         return new UserReadModel(
             $user->getLogin(),
             $user->getEmail(),
-            $user->getRole(),
+            $user->getRole()->get(),
             $user->getAnnualToken(),
             $temporaryToken,
         );
