@@ -55,11 +55,11 @@ class User
     /**
      * Роль пользователя в системе
      *
-     * @ORM\Column(name="role", type="string")
+     * @ORM\Embedded(class="App\UserAccess\Entity\Role")
      *
-     * @var string
+     * @var Role
      */
-    private string $role;
+    private Role $role;
 
     /**
      * Дата регистрации пользователя
@@ -85,7 +85,7 @@ class User
      * @param string $login
      * @param string $email
      * @param string $password
-     * @param string $role
+     * @param Role $role
      * @param DateTimeImmutable $registrationDate
      * @param string $annualToken
      */
@@ -94,7 +94,7 @@ class User
         string $login,
         string $email,
         string $password,
-        string $role,
+        Role $role,
         DateTimeImmutable $registrationDate,
         string $annualToken
     ) {
@@ -140,9 +140,9 @@ class User
     }
 
     /**
-     * @return string
+     * @return Role
      */
-    public function getRole(): string
+    public function getRole(): Role
     {
         return $this->role;
     }

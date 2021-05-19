@@ -21,9 +21,9 @@ final class SignUpTest extends ControllerTest
 
     public function testSuccessful()
     {
-        copy('src/FilesDataBase/DataBase/UserAccess/Users/TestBase/users-test.csv',
-            'src/FilesDataBase/DataBase/UserAccess/Users/TestBase/users-copy.csv'
-        );
+//        copy('src/FilesDataBase/DataBase/UserAccess/Users/TestBase/users-test.csv',
+//            'src/FilesDataBase/DataBase/UserAccess/Users/TestBase/users-copy.csv'
+//        );
 
         $this->client->request(
             'POST',
@@ -52,10 +52,40 @@ final class SignUpTest extends ControllerTest
             $response->getStatusCode()
         );
 
-        copy('src/FilesDataBase/DataBase/UserAccess/Users/TestBase/users-copy.csv',
-            'src/FilesDataBase/DataBase/UserAccess/Users/TestBase/users-test.csv'
+//        copy('src/FilesDataBase/DataBase/UserAccess/Users/TestBase/users-copy.csv',
+//            'src/FilesDataBase/DataBase/UserAccess/Users/TestBase/users-test.csv'
+//        );
+//        unlink('src/FilesDataBase/DataBase/UserAccess/Users/TestBase/users-copy.csv');
+    }
+
+    public function testIncorrectRole()
+    {
+        $this->client->request(
+            'POST',
+            self::query(),
+            [
+                'login' => self::USER_LOGIN,
+                'email' => self::USER_EMAIL,
+                'password' => self::USER_PASSWORD,
+                'role' => 'lol',
+            ]
         );
-        unlink('src/FilesDataBase/DataBase/UserAccess/Users/TestBase/users-copy.csv');
+
+        $expectedResponseContent =
+            [
+                'error' => [
+                    'messages' => [ "Роль не может принимать значение \"lol\"" ],
+                    'code' => 1,
+                ],
+            ];
+
+        $response = $this->client->getResponse();
+        $responseContent = $response->getContent();
+
+        $responseContent = json_decode($responseContent, true);
+
+        $this->assertEquals($expectedResponseContent, $responseContent);
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }
 
     private static function query(): string
