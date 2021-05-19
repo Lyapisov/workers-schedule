@@ -1,5 +1,8 @@
-connect-php: ## Connect php
+connect-php-fpm: ## Connect php-fpm
 	docker-compose exec php-fpm bash
+
+connect-php-cli: ## run command and remove php-cli
+	docker-compose run --rm php-cli -v
 
 init-dev: env-dev docker-pull docker-build docker-up app-init ## Initialize project
 
